@@ -6,8 +6,7 @@ export class Server {
   private name: string;
 
   constructor(ownerId: string, name: string, serverId?: string) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    this.serverId = serverId ?? (uuidv4() as string);
+    this.serverId = serverId ?? uuidv4();
     this.ownerId = ownerId;
     this.name = name;
   }
