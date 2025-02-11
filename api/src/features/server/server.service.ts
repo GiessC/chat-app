@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { CreateServerDto } from './dto/create-server.dto';
 import { ServerDynamoDbRepository } from './server.dynamo.repository';
+import { Server } from './entities/server.entity';
 
 @Injectable()
 export class ServerService {
   constructor(private readonly repository: ServerDynamoDbRepository) {}
 
-  public async create(createServerDto: CreateServerDto) {
-    return await this.repository.create(createServerDto);
+  public async create(ownerId: string, name: string) {
+    const server = new Server(ownerId, name);
+    return await this.repository.create(server);
   }
 }

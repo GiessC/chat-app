@@ -8,6 +8,9 @@ export class ServerController {
 
   @Post()
   create(@Body() createServerDto: CreateServerDto) {
-    return this.serverService.create(createServerDto);
+    return this.serverService.create(
+      createServerDto.ownerId,
+      createServerDto.name,
+    );
   }
 }

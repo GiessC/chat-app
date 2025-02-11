@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateServerDto } from './dto/create-server.dto';
 import { ConfigService } from '@nestjs/config';
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
@@ -18,8 +17,7 @@ export class ServerDynamoDbRepository {
     );
   }
 
-  create(createServerDto: CreateServerDto) {
-    const server = new Server(createServerDto.ownerId, createServerDto.name);
+  create(server: Server) {
     const dto = new ServerDynamoDbDto(server);
     return this.dynamoDb.send(
       new PutCommand({
