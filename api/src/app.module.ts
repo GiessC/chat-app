@@ -24,7 +24,7 @@ function validate(config: Record<string, unknown>): Record<string, unknown> {
   } catch (error) {
     if (error instanceof ZodError) {
       throw new Error(
-        `Configuration validation errors: ${JSON.stringify(error.issues)}`,
+        `Configuration validation errors: ${error.issues.map((issue) => `${issue.path as unknown as string} - ${issue.message}`).join(', ')}`,
       );
     }
     throw error;
