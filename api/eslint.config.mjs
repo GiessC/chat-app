@@ -34,3 +34,10 @@ export default tseslint.config(
     },
   },
 );
+
+eslintPluginPrettierRecommended.rules['prettier/prettier'] = [
+  'error',
+  {
+    endOfLine: 'auto',
+  },
+];
