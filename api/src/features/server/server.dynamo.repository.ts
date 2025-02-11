@@ -18,13 +18,21 @@ export class ServerDynamoDbRepository {
   }
 
   public async create(server: Server): Promise<Server> {
+    console.log('Creating server in DynamoDB:', server.serverId);
     const dto = new ServerDynamoDbDto(server);
     const response = await this.dynamoDb.send(
       new PutCommand({
         TableName: this.configService.get<string>('DYNAMODB_TABLE_NAME'),
         Item: dto,
+        ExpressionAttributeNames: {
+          '#pk': 'pk',
+          '#sk': 'sk',
+        },
+        ConditionExpression:
+          'attribute_not_exists(#pk) AND attribute_not_exists(#sk)',
       }),
     );
+    console.log(`Received response from DynamoDB:`, response);
     if (response.$metadata.httpStatusCode !== HttpStatus.OK) {
       console.error(
         'DynamoDB: Server creation failed with HTTP status:',
