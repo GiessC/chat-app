@@ -1,7 +1,10 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { ServerService } from './providers/server.service';
 import { CreateServerDto } from './dto/create-server.dto';
-import ApiResponse, { ApiResponseWithError } from '../../common/ApiResponse';
+import ApiResponse, {
+  ApiResponseWithError,
+  ErrorCode,
+} from '../../common/ApiResponse';
 import ServerResponseDto from './dto/server-response.dto';
 
 @Controller('server')
@@ -31,6 +34,7 @@ export class ServerController {
       console.error(`Server controller error caused by: ${String(error)}`);
       return new ApiResponseWithError<ServerResponseDto>(
         'Failed to create server.',
+        ErrorCode.InternalError,
       );
     }
   }
