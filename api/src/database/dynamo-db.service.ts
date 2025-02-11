@@ -19,29 +19,25 @@ export default class DynamoDbService {
     );
   }
 
-  public async save<TItem extends Record<string, unknown>>(
+  public async save<TItem>(
     request: SaveRequest<TItem>,
   ): Promise<SaveResponse<TItem>> {
-    const response = await this.dynamoDb.send(
-      new PutCommand({
-        ...request,
-        ReturnValues: 'ALL_NEW',
-      }),
-    );
+    const response = await this.dynamoDb.send(new PutCommand(request));
+    console.log(`[DynamoDB] Save response: ${JSON.stringify(response)}`);
     if (response.$metadata.httpStatusCode !== HttpStatus.OK) {
       throw new DynamoDbError(
-        `DynamoDB: Save failed with HTTP status: ${response.$metadata.httpStatusCode}. Full response: ${JSON.stringify(response)}`,
+        `[DynamoDB] Save failed with HTTP status: ${response.$metadata.httpStatusCode}. Full response: ${JSON.stringify(response)}`,
       );
     }
-    return response.Attributes as TItem;
+    return request.Item;
   }
 }
 
-type SaveRequest<TItem extends Record<string, unknown>> = PutCommandInput & {
+type SaveRequest<TItem> = PutCommandInput & {
   Item: TItem;
 };
 
-type SaveResponse<TItem extends Record<string, unknown>> = TItem;
+type SaveResponse<TItem> = TItem;
 
 class DynamoDbError extends Error {
   constructor(message: string) {

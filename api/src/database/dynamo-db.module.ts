@@ -5,5 +5,6 @@ import DynamoDbService from './dynamo-db.service';
   imports: [],
   controllers: [],
   providers: [DynamoDbService],
+  exports: [DynamoDbService],
 })
 export class DynamoDbModule {}
