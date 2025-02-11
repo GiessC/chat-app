@@ -2,8 +2,8 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import ServerDynamoDbDto from './dto/server.dynamo.dto';
-import { Server } from './entities/server.entity';
+import ServerDynamoDbDto from '../dto/server.dynamo.dto';
+import { Server } from '../entities/server.entity';
 
 @Injectable()
 export class ServerDynamoDbRepository {

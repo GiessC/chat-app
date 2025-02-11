@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ServerDynamoDbRepository } from './server.dynamo.repository';
-import { Server } from './entities/server.entity';
+import { Server } from '../entities/server.entity';
 
 @Injectable()
 export class ServerService {
