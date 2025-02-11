@@ -25,4 +25,12 @@ export class Server {
   get ownerId(): string {
     return this._ownerId;
   }
+
+  get name(): string {
+    return this._name;
+  }
+
+  get createdAt(): string {
+    return this._createdAt;
+  }
 }
