@@ -1,4 +1,4 @@
 export class CreateServerDto {
-  name: string;
-  ownerId: string; // ! Temporarily until auth
+  readonly name: string;
+  readonly ownerId: string; // ! Temporarily until auth
 }
