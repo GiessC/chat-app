@@ -38,9 +38,7 @@ export class DynamoDbWrite<TEntity> {
 
   public async save(entity: TEntity): Promise<TEntity> {
     const response = await this.dynamoDb.putItem<TEntity>({
-      TableName: this.configService.get(
-        'database.dynamoDb.dynamoDbMetadataTable',
-      ),
+      TableName: this.configService.get<string>('DYNAMODB_TABLE_NAME'),
       Item: entity,
       ReturnValues: 'ALL_NEW',
     });
