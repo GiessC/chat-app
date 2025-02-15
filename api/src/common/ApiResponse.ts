@@ -1,7 +1,4 @@
-export enum ErrorCode {
-  RequestValidationError,
-  InternalError,
-}
+import { ErrorCode } from './errors/error-code';
 
 export default class ApiResponse<TBody = never> {
   message: string;
