@@ -8,10 +8,7 @@ export default class ServerInvite {
     private readonly uses: number,
   ) {}
 
-  public static decodeLink(link: string): {
-    inviteId: string;
-    serverId: string;
-  } {
+  public static decodeLink(link: string) {
     const [inviteId, serverId] = Buffer.from(link, 'base64')
       .toString()
       .split(':');
