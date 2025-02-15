@@ -48,6 +48,14 @@ export class ServerMember {
     this._roleIds = roleIds;
   }
 
+  public get serverId(): string {
+    return this._serverId;
+  }
+
+  public get userId(): string {
+    return this._userId;
+  }
+
   public get username(): string {
     return this._username;
   }
