@@ -6,16 +6,16 @@ export default class BaseError extends Error {
     public readonly name: string,
     readonly message: string,
     public readonly errorCode: ErrorCode,
-    public readonly innerError?: Error,
+    public readonly cause?: Error,
     public readonly httpStatus?: HttpStatus,
   ) {
     super(message);
-    if (innerError instanceof BaseError && !this.httpStatus) {
-      this.httpStatus = innerError.httpStatus;
+    if (cause instanceof BaseError && !this.httpStatus) {
+      this.httpStatus = cause.httpStatus;
     }
   }
 
   public toString(): string {
-    return `${this.name} (${this.errorCode}): ${this.message} ${this.httpStatus ? `HTTP Status: ${this.httpStatus}.` : ''} ${this.innerError ? `Inner Error: ${this.innerError.toString()}` : ''}`;
+    return `${this.name} (${this.errorCode}): ${this.message} ${this.httpStatus ? `HTTP Status: ${this.httpStatus}.` : ''} ${this.cause ? `Inner Error: ${this.cause.toString()}` : ''}`;
   }
 }

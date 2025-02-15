@@ -3,12 +3,12 @@ import { HttpStatus } from '@nestjs/common';
 import { ErrorCode } from './error-code';
 
 export default class EntityAlreadyExistsError extends BaseError {
-  constructor(message: string) {
+  constructor(message: string, cause?: Error) {
     super(
       'EntityAlreadyExistsError',
       message,
       ErrorCode.ENTITY_ALREADY_EXISTS,
-      undefined,
+      cause,
       HttpStatus.CONFLICT,
     );
   }
