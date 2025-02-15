@@ -1,11 +1,11 @@
 export default class ServerInvite {
   constructor(
-    private readonly inviteId: string,
-    private readonly serverId: string,
-    private readonly creatorId: string,
-    private readonly expirationDate: Date,
-    private readonly maxUses: number,
-    private readonly uses: number,
+    private readonly _inviteId: string,
+    private readonly _serverId: string,
+    private readonly _creatorId: string,
+    private readonly _expirationDate: Date,
+    private readonly _maxUses: number,
+    private readonly _uses: number,
   ) {}
 
   public static decodeLink(link: string) {
@@ -19,7 +19,9 @@ export default class ServerInvite {
   }
 
   public getInviteCode(): string {
-    return Buffer.from(`${this.inviteId}:${this.serverId}`).toString('base64');
+    return Buffer.from(`${this._inviteId}:${this._serverId}`).toString(
+      'base64',
+    );
   }
 
   public isValid(): boolean {
@@ -27,14 +29,18 @@ export default class ServerInvite {
   }
 
   public isExpired(): boolean {
-    return this.expirationDate < new Date();
+    return this._expirationDate < new Date();
   }
 
   public isMaxUsesReached(): boolean {
-    return this.uses >= this.maxUses;
+    return this._uses >= this._maxUses;
   }
 
-  public get creator(): string {
-    return this.creatorId;
+  public get creatorId(): string {
+    return this._creatorId;
+  }
+
+  public get serverId(): string {
+    return this._serverId;
   }
 }
