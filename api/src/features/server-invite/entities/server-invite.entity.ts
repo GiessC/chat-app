@@ -7,7 +7,7 @@ export default class ServerInvite {
   constructor(
     private readonly _serverId: string,
     private readonly _creatorId: string,
-    private readonly _expirationDate: Date,
+    private readonly _expirationDate?: Date,
     private readonly _maxUses?: number,
     inviteId?: string,
   ) {
@@ -35,7 +35,7 @@ export default class ServerInvite {
   }
 
   public isExpired(): boolean {
-    return this._expirationDate < new Date();
+    return !this._expirationDate || this._expirationDate < new Date();
   }
 
   public isMaxUsesReached(): boolean {
@@ -49,7 +49,7 @@ export default class ServerInvite {
     return this._inviteId;
   }
 
-  public get expirationDate(): Date {
+  public get expirationDate(): Date | undefined {
     return this._expirationDate;
   }
 
