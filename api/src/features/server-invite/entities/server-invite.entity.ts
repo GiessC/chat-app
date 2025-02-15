@@ -8,7 +8,7 @@ export default class ServerInvite {
     private readonly _serverId: string,
     private readonly _creatorId: string,
     private readonly _expirationDate: Date,
-    private readonly _maxUses: number,
+    private readonly _maxUses?: number,
     inviteId?: string,
   ) {
     this._inviteId = inviteId ?? uuidv4();
@@ -39,6 +39,9 @@ export default class ServerInvite {
   }
 
   public isMaxUsesReached(): boolean {
+    if (!this._maxUses) {
+      return false;
+    }
     return this._uses >= this._maxUses;
   }
 
@@ -50,7 +53,7 @@ export default class ServerInvite {
     return this._expirationDate;
   }
 
-  public get maxUses(): number {
+  public get maxUses(): number | undefined {
     return this._maxUses;
   }
 
