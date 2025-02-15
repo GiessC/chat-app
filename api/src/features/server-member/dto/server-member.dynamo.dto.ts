@@ -51,48 +51,4 @@ export default class ServerMemberDynamoDto {
   public static generateGsi1Sk() {
     return '';
   }
-
-  public setServerNickname(serverNickname?: string) {
-    this._serverNickname = serverNickname;
-  }
-
-  public setBanned(isBanned: boolean) {
-    this._isBanned = isBanned;
-  }
-
-  public setMuted(isMuted: boolean) {
-    this._isMuted = isMuted;
-  }
-
-  public setDeafened(isDeafened: boolean) {
-    this._isDeafened = isDeafened;
-  }
-
-  public setRoles(roleIds: string[]) {
-    this._roleIds = roleIds;
-  }
-
-  public get username(): string {
-    return this._username;
-  }
-
-  public get serverNickname(): string | undefined {
-    return this._serverNickname;
-  }
-
-  public get roleIds(): string[] {
-    return this._roleIds;
-  }
-
-  public get isBanned(): boolean {
-    return this._isBanned;
-  }
-
-  public get isMuted(): boolean {
-    return this._isMuted;
-  }
-
-  public get isDeafened(): boolean {
-    return this._isDeafened;
-  }
 }
