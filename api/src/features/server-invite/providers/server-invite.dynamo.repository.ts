@@ -6,7 +6,7 @@ import ServerInvite from '../entities/server-invite.entity';
 import ServerInviteDynamoDto from '../dto/server-invite.dynamo.dto';
 
 @Injectable()
-export class ServerInviteDynamoDbRepository {
+export class ServerInviteDynamoRepository {
   constructor(
     private readonly dynamoDb: DynamoDbService,
     private readonly configService: ConfigService,
