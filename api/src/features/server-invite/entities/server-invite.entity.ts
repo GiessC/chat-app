@@ -36,6 +36,22 @@ export default class ServerInvite {
     return this._uses >= this._maxUses;
   }
 
+  public get inviteId(): string {
+    return this._inviteId;
+  }
+
+  public get expirationDate(): Date {
+    return this._expirationDate;
+  }
+
+  public get maxUses(): number {
+    return this._maxUses;
+  }
+
+  public get uses(): number {
+    return this._uses;
+  }
+
   public get creatorId(): string {
     return this._creatorId;
   }
