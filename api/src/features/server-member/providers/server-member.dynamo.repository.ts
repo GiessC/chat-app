@@ -4,6 +4,8 @@ import DynamoDbService from '../../../database/dynamo-db.service';
 import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb';
 import { ServerMember } from '../entities/server-member.entity';
 import ServerMemberDynamoDto from '../dto/server-member.dynamo.dto';
+import EntityAlreadyExistsError from '../../../common/errors/entity-already-exists.error';
+import InternalError from '../../../common/errors/internal.error';
 
 @Injectable()
 export class ServerMemberDynamoDbRepository {
@@ -12,7 +14,7 @@ export class ServerMemberDynamoDbRepository {
     private readonly configService: ConfigService,
   ) {}
 
-  async joinServer(serverMember: ServerMember): Promise<ServerMember> {
+  async create(serverMember: ServerMember): Promise<ServerMember> {
     try {
       const serverMemberDynamoDto = new ServerMemberDynamoDto(
         serverMember.serverId,
@@ -37,18 +39,12 @@ export class ServerMemberDynamoDbRepository {
       return serverMember;
     } catch (e) {
       if (e instanceof ConditionalCheckFailedException) {
-        throw new ServerMemberDynamoDbRepositoryError(
+        throw new EntityAlreadyExistsError(
           'You have already joined this server.',
+          e,
         );
       }
-      throw new ServerMemberDynamoDbRepositoryError('Failed to join server.');
+      throw new InternalError('Failed to join server.');
     }
-  }
-}
-
-export class ServerMemberDynamoDbRepositoryError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'ServerMemberDynamoDbRepositoryError';
   }
 }
