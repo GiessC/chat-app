@@ -1,6 +1,4 @@
-interface WithDynamoRetention {
-  readonly retentionDateUnix?: number;
-}
+import WithDynamoRetention from '../../../database/dynamo-db-retention';
 
 export default class ServerInviteDynamoDto implements WithDynamoRetention {
   public readonly pk: string = this.generatePk();
