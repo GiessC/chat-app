@@ -1,8 +1,8 @@
 import WithDynamoRetention from '../../../database/dynamo-db-retention';
 
 export default class ServerInviteDynamoDto implements WithDynamoRetention {
-  public readonly pk: string = this.generatePk();
-  public readonly sk: string = this.generateSk();
+  public readonly pk: string = ServerInviteDynamoDto.generatePk(this.inviteId);
+  public readonly sk: string = ServerInviteDynamoDto.generateSk(this.serverId);
   public readonly retentionDateUnix: number;
 
   constructor(
@@ -14,11 +14,11 @@ export default class ServerInviteDynamoDto implements WithDynamoRetention {
     public readonly uses: number = 0,
   ) {}
 
-  private generatePk(): string {
-    return `INV#${this.inviteId}`;
+  private static generatePk(inviteId: string): string {
+    return `INV#${inviteId}`;
   }
 
-  private generateSk(): string {
-    return `SERVER#${this.serverId}`;
+  private static generateSk(serverId: string): string {
+    return `SERVER#${serverId}`;
   }
 }
