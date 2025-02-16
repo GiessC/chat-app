@@ -54,6 +54,15 @@ export class ServerService {
       throw new ServerServiceError('Failed to get servers by user.');
     }
   }
+
+  async removeMember(serverId: string, userId: string) {
+    try {
+      await this.serverMemberRepo.delete(serverId, userId);
+    } catch (error: unknown) {
+      console.error(`Server service error caused by: ${String(error)}`);
+      throw new ServerServiceError('Failed to remove member from server.');
+    }
+  }
 }
 
 class ServerServiceError extends Error {
