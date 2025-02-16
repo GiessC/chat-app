@@ -83,10 +83,10 @@ export class ServerMemberDynamoDbRepository {
     try {
       const response = await this.dynamoDb.query<ServerMemberDynamoDto>({
         TableName: this.configService.get<string>('DYNAMODB_TABLE_NAME'),
-        KeyConditionExpression: 'pk = :pk AND sk = :sk',
+        KeyConditionExpression: 'pk = :pk AND begins_with(sk, :sk)',
         ExpressionAttributeValues: {
-          ':pk': ServerMemberDynamoDto.pkFilterByServer(serverId),
-          ':sk': ServerMemberDynamoDto.generateSk(serverId),
+          ':pk': ServerMemberDynamoDto.generatePk(serverId),
+          ':sk': ServerMemberDynamoDto.skFilterByServer(serverId),
         },
       });
       return response.map(
