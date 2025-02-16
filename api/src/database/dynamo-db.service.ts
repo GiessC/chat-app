@@ -2,6 +2,8 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import {
   BatchGetCommand,
   BatchGetCommandInput,
+  DeleteCommand,
+  DeleteCommandInput,
   DynamoDBDocumentClient,
   GetCommand,
   GetCommandInput,
@@ -72,6 +74,16 @@ export default class DynamoDbService {
       [key: string]: TItem[];
     };
   }
+
+  async delete(request: DeleteRequest): Promise<void> {
+    const response = await this.dynamoDb.send(new DeleteCommand(request));
+    console.debug(`[DynamoDB] Delete response: ${JSON.stringify(response)}`);
+    if (response.$metadata.httpStatusCode !== HttpStatus.OK) {
+      throw new DynamoDbError(
+        `[DynamoDB] Delete failed with HTTP status: ${response.$metadata.httpStatusCode}. Full response: ${JSON.stringify(response)}`,
+      );
+    }
+  }
 }
 
 type SaveRequest<TItem> = PutCommandInput & {
@@ -89,3 +101,5 @@ class DynamoDbError extends Error {
 type GetRequest = GetCommandInput & {};
 
 type QueryRequest = QueryCommandInput & {};
+
+type DeleteRequest = DeleteCommandInput & {};
