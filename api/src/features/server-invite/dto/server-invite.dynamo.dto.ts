@@ -9,9 +9,9 @@ export default class ServerInviteDynamoDto implements WithDynamoRetention {
     public readonly inviteId: string,
     public readonly serverId: string,
     public readonly creatorId: string,
-    public readonly expirationDate: Date,
-    public readonly maxUses: number,
-    public readonly uses: number,
+    public readonly expirationDate?: Date,
+    public readonly maxUses?: number,
+    public readonly uses: number = 0,
   ) {}
 
   private generatePk(): string {
