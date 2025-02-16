@@ -1,8 +1,8 @@
 export default class ServerMemberDynamoDto {
   public readonly pk: string;
   public readonly sk: string;
-  public readonly gsi1Pk: string;
-  public readonly gsi1Sk: string;
+  public readonly gsi1pk: string;
+  public readonly gsi1sk: string;
   public readonly serverId: string;
   public readonly userId: string;
   public readonly username: string;
@@ -32,8 +32,8 @@ export default class ServerMemberDynamoDto {
     this.isDeafened = isDeafened;
     this.pk = ServerMemberDynamoDto.generatePk(this.serverId, this.userId);
     this.sk = ServerMemberDynamoDto.generateSk(this.serverId);
-    this.gsi1Pk = ServerMemberDynamoDto.generateGsi1Pk(this.userId);
-    this.gsi1Sk = ServerMemberDynamoDto.generateGsi1Sk();
+    this.gsi1pk = ServerMemberDynamoDto.generateGsi1Pk(this.userId);
+    this.gsi1sk = ServerMemberDynamoDto.generateGsi1Sk();
   }
 
   public static generatePk(serverId: string, userId: string) {
@@ -49,6 +49,6 @@ export default class ServerMemberDynamoDto {
   }
 
   public static generateGsi1Sk() {
-    return '';
+    return '$';
   }
 }
