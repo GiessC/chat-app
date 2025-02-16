@@ -11,6 +11,8 @@ import {
   PutCommandInput,
   QueryCommand,
   QueryCommandInput,
+  UpdateCommand,
+  UpdateCommandInput,
 } from '@aws-sdk/lib-dynamodb';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { ConfigService } from '@nestjs/config';
@@ -84,6 +86,51 @@ export default class DynamoDbService {
       );
     }
   }
+
+  async update<TItem>(request: UpdateRequest<TItem>) {
+    if (Object.keys(request.Updates).length === 0) {
+      throw new DynamoDbError('[DynamoDB] No updates provided.');
+    }
+    const response = await this.dynamoDb.send(
+      new UpdateCommand({
+        ...request,
+        ...this.getExpressionAttributes(request),
+        ReturnValues: 'ALL_NEW',
+      }),
+    );
+    console.debug(`[DynamoDB] Update response: ${JSON.stringify(response)}`);
+    if (response.$metadata.httpStatusCode !== HttpStatus.OK) {
+      throw new DynamoDbError(
+        `[DynamoDB] Update failed with HTTP status: ${response.$metadata.httpStatusCode}. Full response: ${JSON.stringify(response)}`,
+      );
+    }
+    return response.Attributes as TItem;
+  }
+
+  private getExpressionAttributes<TItem>(
+    request: UpdateRequest<TItem>,
+  ): Pick<
+    UpdateCommandInput,
+    | 'ExpressionAttributeNames'
+    | 'ExpressionAttributeValues'
+    | 'UpdateExpression'
+  > {
+    const expressionAttributeNames: Record<string, string> = {};
+    const expressionAttributeValues: Record<string, unknown> = {};
+    let updateExpression = 'SET ';
+
+    Object.keys(request.Updates).forEach((key) => {
+      expressionAttributeNames[`#${key}`] = key;
+      expressionAttributeValues[`:${key}`] = request.Updates[key];
+      updateExpression += `#${key} = :${key}, `;
+    });
+
+    return {
+      ExpressionAttributeNames: expressionAttributeNames,
+      ExpressionAttributeValues: expressionAttributeValues,
+      UpdateExpression: updateExpression.slice(0, -2),
+    };
+  }
 }
 
 type SaveRequest<TItem> = PutCommandInput & {
@@ -103,3 +150,14 @@ type GetRequest = GetCommandInput & {};
 type QueryRequest = QueryCommandInput & {};
 
 type DeleteRequest = DeleteCommandInput & {};
+
+type UpdateRequest<TItem> = Omit<
+  UpdateCommandInput,
+  | 'AttributeValues'
+  | 'ReturnValues'
+  | 'ExpressionAttributeNames'
+  | 'ExpressionAttributeValues'
+  | 'UpdateExpression'
+> & {
+  Updates: Partial<TItem>;
+};
