@@ -5,6 +5,7 @@ import {
   GetCommandInput,
   PutCommand,
   PutCommandInput,
+  QueryCommandInput,
   ScanCommand,
   ScanCommandInput,
 } from '@aws-sdk/lib-dynamodb';
@@ -47,12 +48,12 @@ export default class DynamoDbService {
     return response.Item as TItem;
   }
 
-  async scan<TItem>(request: ScanRequest): Promise<TItem[]> {
+  async query<TItem>(request: QueryRequest): Promise<TItem[]> {
     const response = await this.dynamoDb.send(new ScanCommand(request));
-    console.debug(`[DynamoDB] Scan response: ${JSON.stringify(response)}`);
+    console.debug(`[DynamoDB] Query response: ${JSON.stringify(response)}`);
     if (response.$metadata.httpStatusCode !== HttpStatus.OK) {
       throw new DynamoDbError(
-        `[DynamoDB] Scan failed with HTTP status: ${response.$metadata.httpStatusCode}. Full response: ${JSON.stringify(response)}`,
+        `[DynamoDB] Query failed with HTTP status: ${response.$metadata.httpStatusCode}. Full response: ${JSON.stringify(response)}`,
       );
     }
     return response.Items as TItem[];
@@ -73,4 +74,4 @@ class DynamoDbError extends Error {
 
 type GetRequest = GetCommandInput & {};
 
-type ScanRequest = ScanCommandInput & {};
+type QueryRequest = QueryCommandInput & {};
