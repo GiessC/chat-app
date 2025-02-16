@@ -11,6 +11,7 @@ import { CreateServerDto } from './dto/create-server.dto';
 import ApiResponse, { ListApiResponse } from '../../common/ApiResponse';
 import ServerResponseDto from './dto/server-response.dto';
 import TestJoinServerDto from './dto/join-server.dto';
+import ServerMemberResponseDto from './dto/server-member-response.dto';
 
 @Controller('server')
 export class ServerController {
@@ -68,6 +69,30 @@ export class ServerController {
     return new ListApiResponse<ServerResponseDto>(
       `Listed servers for user '${userId}'`,
       serverResponseDtos,
+    );
+  }
+
+  @Get(['members', 'list'])
+  public async listMembersByServerId(
+    @Body() { serverId }: { serverId: string },
+  ): Promise<ApiResponse<ServerMemberResponseDto>> {
+    const members = await this.serverService.getUsersByServer(serverId);
+    const memberResponseDtos: ServerMemberResponseDto[] = members.map(
+      (member) => ({
+        serverId: member.serverId,
+        userId: member.userId,
+        username: member.username,
+        joinedAt: member.joinedAt,
+        serverNickname: member.serverNickname,
+        isBanned: member.isBanned,
+        isDeafened: member.isDeafened,
+        isMuted: member.isMuted,
+        roleIds: member.roleIds,
+      }),
+    );
+    return new ListApiResponse<ServerMemberResponseDto>(
+      `Listed members for server '${serverId}'`,
+      memberResponseDtos,
     );
   }
 }
