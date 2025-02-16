@@ -35,6 +35,27 @@ export class ServerDynamoDbRepository {
       throw new ServerDynamoDbRepositoryError('Failed to create server');
     }
   }
+
+  async get(serverId: string): Promise<Server> {
+    try {
+      const response = await this.dynamoDb.get<ServerDynamoDbDto>({
+        TableName: this.configService.get<string>('DYNAMODB_TABLE_NAME'),
+        Key: {
+          pk: ServerDynamoDbDto.generatePk(serverId),
+          sk: ServerDynamoDbDto.generateSk(serverId),
+        },
+      });
+      return new Server(
+        response.ownerId,
+        response.name,
+        response.serverId,
+        response.createdAt,
+      );
+    } catch (error: unknown) {
+      console.error(error);
+      throw new ServerDynamoDbRepositoryError('Failed to get server');
+    }
+  }
 }
 
 export class ServerDynamoDbRepositoryError extends Error {
