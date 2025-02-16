@@ -104,6 +104,37 @@ export class ServerInviteDynamoDbRepository {
       throw new ServerInviteDynamoDbRepositoryError('Failed to revoke invite');
     }
   }
+
+  async list(serverId: string): Promise<ServerInvite[]> {
+    try {
+      const invites = await this.dynamoDb.query<ServerInviteDynamoDto>({
+        TableName: this.configService.get<string>('DYNAMODB_TABLE_NAME'),
+        KeyConditionExpression: 'pk = :pk AND begins_with(sk, :sk)',
+        ExpressionAttributeValues: {
+          ':pk': ServerInviteDynamoDto.generatePk(serverId),
+          ':sk': 'INV',
+        },
+      });
+      return invites.map(
+        (inviteDto) =>
+          new ServerInvite(
+            inviteDto.serverId,
+            inviteDto.creatorId,
+            inviteDto.expirationDate
+              ? parseJSON(inviteDto.expirationDate)
+              : undefined,
+            inviteDto.maxUses,
+            inviteDto.uses,
+            inviteDto.status,
+            inviteDto.inviteId,
+            inviteDto.token,
+          ),
+      );
+    } catch (error: unknown) {
+      console.error(error);
+      throw new ServerInviteDynamoDbRepositoryError('Failed to list invites');
+    }
+  }
 }
 
 export class ServerInviteDynamoDbRepositoryError extends Error {

@@ -2,17 +2,17 @@ import WithDynamoRetention from '../../../database/dynamo-db-retention';
 import { ServerInviteStatus } from '../entities/server-invite.entity';
 
 export default class ServerInviteDynamoDto implements WithDynamoRetention {
-  public readonly pk: string = ServerInviteDynamoDto.generatePk(this.inviteId);
-  public readonly sk: string = ServerInviteDynamoDto.generateSk(this.serverId);
+  public readonly pk: string = ServerInviteDynamoDto.generatePk(this.serverId);
+  public readonly sk: string = ServerInviteDynamoDto.generateSk(this.inviteId);
   public readonly retentionDateUnix?: number;
   public readonly expirationDate?: string;
 
-  public static generatePk(inviteId: string): string {
-    return `INV#${inviteId}`;
+  public static generatePk(serverId: string): string {
+    return `SERVER#${serverId}`;
   }
 
-  public static generateSk(serverId: string): string {
-    return `SERVER#${serverId}`;
+  public static generateSk(inviteId: string): string {
+    return `INV#${inviteId}`;
   }
 
   constructor(

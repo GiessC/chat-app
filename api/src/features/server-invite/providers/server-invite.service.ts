@@ -47,6 +47,15 @@ export default class ServerInviteService {
       throw new ServerInviteServiceError('Failed to revoke server invite.');
     }
   }
+
+  async list(serverId: string) {
+    try {
+      return await this.repository.list(serverId);
+    } catch (error: unknown) {
+      console.error(`Server invite service error caused by: ${String(error)}`);
+      throw new ServerInviteServiceError('Failed to list server invites.');
+    }
+  }
 }
 
 export class ServerInviteServiceError extends Error {
