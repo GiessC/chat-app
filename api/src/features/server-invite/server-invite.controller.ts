@@ -5,11 +5,11 @@ import CreateServerInviteDto from './dto/create-server-invite.dto';
 import ServerInviteResponseDto from './dto/server-invite-response.dto';
 import { ErrorCode } from '../../common/errors/error-code';
 
-@Controller(['server', 'invite'])
+@Controller('server/invite')
 export class ServerInviteController {
   constructor(private readonly serverInviteService: ServerInviteService) {}
 
-  @Post()
+  @Post('create')
   public async create(
     @Body() createServerInviteDto: CreateServerInviteDto,
   ): Promise<ApiResponse<ServerInviteResponseDto>> {
@@ -17,7 +17,7 @@ export class ServerInviteController {
       const serverInvite = await this.serverInviteService.create(
         createServerInviteDto.serverId,
         createServerInviteDto.creatorId,
-        createServerInviteDto.expirationDate,
+        createServerInviteDto.expirationDays,
         createServerInviteDto.maxUses,
       );
       const responseDto: ServerInviteResponseDto = {
