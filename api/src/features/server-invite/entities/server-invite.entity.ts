@@ -2,6 +2,23 @@ import { v4 as uuidv4 } from 'uuid';
 
 export default class ServerInvite {
   private readonly _inviteId: string;
+  private readonly token: string;
+
+  public static decodeInviteCode(inviteCode: string) {
+    const [base64, token] = inviteCode.split(/(?<=.{6})/);
+    const [inviteId, serverId] = Buffer.from(base64, 'base64')
+      .toString()
+      .split(':');
+    return {
+      inviteId,
+      serverId,
+      token,
+    };
+  }
+
+  private static generateToken() {
+    return uuidv4().replace(/-/g, '').substring(0, 6);
+  }
 
   constructor(
     private readonly _serverId: string,
@@ -10,23 +27,20 @@ export default class ServerInvite {
     private readonly _maxUses?: number,
     private readonly _uses: number = 0,
     inviteId?: string,
+    token?: string,
   ) {
     this._inviteId = inviteId ?? uuidv4();
+    this.token = token ?? ServerInvite.generateToken();
   }
 
-  public static decodeInviteCode(inviteCode: string) {
-    const [inviteId, serverId] = Buffer.from(inviteCode, 'base64')
-      .toString()
-      .split(':');
-    return {
-      inviteId,
-      serverId,
-    };
+  public matchesToken(token: string): boolean {
+    return this.token === token;
   }
 
   public getInviteCode(): string {
-    return Buffer.from(`${this._inviteId}:${this._serverId}`).toString(
-      'base64',
+    return (
+      Buffer.from(`${this._inviteId}:${this._serverId}`).toString('base64') +
+      this.token
     );
   }
 
