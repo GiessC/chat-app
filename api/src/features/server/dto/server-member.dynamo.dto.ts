@@ -40,6 +40,10 @@ export default class ServerMemberDynamoDto {
     return `SERVER#${serverId}#MEMBER#${userId}`;
   }
 
+  public static pkFilterByServer(serverId: string) {
+    return `SERVER#${serverId}#MEMBER`;
+  }
+
   public static generateSk(serverId: string) {
     return `SERVER#${serverId}#MEMBER`;
   }
