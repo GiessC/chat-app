@@ -16,8 +16,8 @@ export class ServerInviteDynamoRepository {
     try {
       console.log('Creating server invite in DynamoDB:', invite.serverId);
       const dto = new ServerInviteDynamoDto(
-        invite.serverId,
         invite.inviteId,
+        invite.serverId,
         invite.creatorId,
         invite.expirationDate,
         invite.maxUses,
