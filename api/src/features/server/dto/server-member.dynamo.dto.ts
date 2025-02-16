@@ -3,14 +3,14 @@ export default class ServerMemberDynamoDto {
   public readonly sk: string;
   public readonly gsi1Pk: string;
   public readonly gsi1Sk: string;
-  private readonly _serverId: string;
-  private readonly _userId: string;
-  private readonly _username: string;
-  private _serverNickname?: string;
-  private _roleIds: string[];
-  private _isBanned: boolean;
-  private _isMuted: boolean;
-  private _isDeafened: boolean;
+  private readonly serverId: string;
+  private readonly userId: string;
+  private readonly username: string;
+  private serverNickname?: string;
+  private roleIds: string[];
+  private isBanned: boolean;
+  private isMuted: boolean;
+  private isDeafened: boolean;
 
   constructor(
     serverId: string,
@@ -22,17 +22,17 @@ export default class ServerMemberDynamoDto {
     isMuted: boolean = false,
     isDeafened: boolean = false,
   ) {
-    this._serverId = serverId;
-    this._userId = userId;
-    this._username = username;
-    this._serverNickname = serverNickname;
-    this._roleIds = roleIds;
-    this._isBanned = isBanned;
-    this._isMuted = isMuted;
-    this._isDeafened = isDeafened;
-    this.pk = ServerMemberDynamoDto.generatePk(this._serverId, this._userId);
-    this.sk = ServerMemberDynamoDto.generateSk(this._serverId);
-    this.gsi1Pk = ServerMemberDynamoDto.generateGsi1Pk(this._userId);
+    this.serverId = serverId;
+    this.userId = userId;
+    this.username = username;
+    this.serverNickname = serverNickname;
+    this.roleIds = roleIds;
+    this.isBanned = isBanned;
+    this.isMuted = isMuted;
+    this.isDeafened = isDeafened;
+    this.pk = ServerMemberDynamoDto.generatePk(this.serverId, this.userId);
+    this.sk = ServerMemberDynamoDto.generateSk(this.serverId);
+    this.gsi1Pk = ServerMemberDynamoDto.generateGsi1Pk(this.userId);
     this.gsi1Sk = ServerMemberDynamoDto.generateGsi1Sk();
   }
 
