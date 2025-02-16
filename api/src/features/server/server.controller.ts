@@ -5,6 +5,9 @@ import {
   HttpStatus,
   HttpCode,
   Get,
+  Patch,
+  Param,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ServerService } from './providers/server.service';
 import { CreateServerDto } from './dto/create-server.dto';
@@ -12,6 +15,7 @@ import ApiResponse, { ListApiResponse } from '../../common/ApiResponse';
 import ServerResponseDto from './dto/server-response.dto';
 import TestJoinServerDto from './dto/join-server.dto';
 import ServerMemberResponseDto from './dto/server-member-response.dto';
+import UpdateMemberDto from './dto/update-member.dto';
 
 @Controller('server')
 export class ServerController {
@@ -34,6 +38,34 @@ export class ServerController {
     return new ApiResponse<ServerResponseDto>(
       `Created server '${createServerDto.name}'`,
       serverResponseDto,
+    );
+  }
+
+  @Patch(':serverId/members/:userId')
+  public async update(
+    @Param('serverId', new ParseUUIDPipe()) serverId: string,
+    @Param('userId', new ParseUUIDPipe()) userId: string,
+    @Body() updateMemberDto: UpdateMemberDto,
+  ): Promise<ApiResponse<ServerMemberResponseDto>> {
+    const serverMember = await this.serverService.updateMember(
+      serverId,
+      userId,
+      updateMemberDto,
+    );
+    const serverMemberResponseDto: ServerMemberResponseDto = {
+      serverId: serverMember.serverId,
+      userId: serverMember.userId,
+      username: serverMember.username,
+      joinedAt: serverMember.joinedAt,
+      serverNickname: serverMember.serverNickname,
+      isBanned: serverMember.isBanned,
+      isDeafened: serverMember.isDeafened,
+      isMuted: serverMember.isMuted,
+      roleIds: serverMember.roleIds,
+    };
+    return new ApiResponse<ServerMemberResponseDto>(
+      `Updated member '${serverMember.username}'`,
+      serverMemberResponseDto,
     );
   }
 
