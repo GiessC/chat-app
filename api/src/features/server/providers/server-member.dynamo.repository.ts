@@ -143,4 +143,34 @@ export class ServerMemberDynamoDbRepository {
       throw new InternalError('Failed to remove member from server.');
     }
   }
+
+  async update(
+    serverId: string,
+    userId: string,
+    updates: Partial<ServerMemberDynamoDto>,
+  ): Promise<ServerMember> {
+    try {
+      const memberDto = await this.dynamoDb.update<ServerMemberDynamoDto>({
+        TableName: this.configService.get<string>('DYNAMODB_TABLE_NAME'),
+        Key: {
+          pk: ServerMemberDynamoDto.generatePk(serverId),
+          sk: ServerMemberDynamoDto.generateSk(serverId, userId),
+        },
+        Updates: updates,
+      });
+      return new ServerMember(
+        memberDto.serverId,
+        memberDto.userId,
+        memberDto.username,
+        memberDto.serverNickname,
+        memberDto.roleIds,
+        memberDto.isBanned,
+        memberDto.isMuted,
+        memberDto.isDeafened,
+      );
+    } catch (error: unknown) {
+      console.error(error);
+      throw new InternalError('Failed to update member.');
+    }
+  }
 }
