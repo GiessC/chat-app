@@ -8,6 +8,7 @@ export default class ServerMemberDynamoDto {
   public readonly username: string;
   public readonly serverNickname?: string;
   public readonly roleIds: string[];
+  public readonly joinedAt: string;
   public readonly isBanned: boolean;
   public readonly isMuted: boolean;
   public readonly isDeafened: boolean;
@@ -18,6 +19,7 @@ export default class ServerMemberDynamoDto {
     username: string,
     serverNickname?: string,
     roleIds: string[] = [],
+    joinedAt: Date = new Date(),
     isBanned: boolean = false,
     isMuted: boolean = false,
     isDeafened: boolean = false,
@@ -27,6 +29,7 @@ export default class ServerMemberDynamoDto {
     this.username = username;
     this.serverNickname = serverNickname;
     this.roleIds = roleIds;
+    this.joinedAt = joinedAt.toISOString();
     this.isBanned = isBanned;
     this.isMuted = isMuted;
     this.isDeafened = isDeafened;
