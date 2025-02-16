@@ -1,7 +1,14 @@
-import { Controller, Post, Body, HttpStatus, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpStatus,
+  HttpCode,
+  Get,
+} from '@nestjs/common';
 import { ServerService } from './providers/server.service';
 import { CreateServerDto } from './dto/create-server.dto';
-import ApiResponse from '../../common/ApiResponse';
+import ApiResponse, { ListApiResponse } from '../../common/ApiResponse';
 import ServerResponseDto from './dto/server-response.dto';
 import TestJoinServerDto from './dto/join-server.dto';
 
@@ -44,6 +51,23 @@ export class ServerController {
     return new ApiResponse<ServerResponseDto>(
       `Joined server '${server.name}'`,
       serverResponseDto,
+    );
+  }
+
+  @Get('list')
+  public async listByUserId(
+    @Body() { userId }: { userId: string },
+  ): Promise<ApiResponse<ServerResponseDto>> {
+    const servers = await this.serverService.getServersByUser(userId);
+    const serverResponseDtos: ServerResponseDto[] = servers.map((server) => ({
+      serverId: server.serverId,
+      ownerId: server.ownerId,
+      name: server.name,
+      createdAt: server.createdAt,
+    }));
+    return new ListApiResponse<ServerResponseDto>(
+      `Listed servers for user '${userId}'`,
+      serverResponseDtos,
     );
   }
 }
