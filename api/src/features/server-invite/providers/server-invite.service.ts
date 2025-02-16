@@ -29,6 +29,15 @@ export default class ServerInviteService {
       throw new ServerInviteServiceError('Failed to create server invite.');
     }
   }
+
+  async get(serverId: string, inviteId: string, token: string) {
+    try {
+      return await this.repository.get(serverId, inviteId, token);
+    } catch (error: unknown) {
+      console.error(`Server invite service error caused by: ${String(error)}`);
+      throw new ServerInviteServiceError('Failed to get server invite.');
+    }
+  }
 }
 
 export class ServerInviteServiceError extends Error {
