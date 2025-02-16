@@ -39,6 +39,9 @@ export class ServerService {
   async getServersByUser(userId: string): Promise<Server[]> {
     try {
       const serverMembers = await this.serverMemberRepo.getAllByUserId(userId);
+      if (serverMembers.length === 0) {
+        return [];
+      }
       return this.serverRepo.getMany(serverMembers.map((m) => m.serverId));
     } catch (error: unknown) {
       console.error(`Server service error caused by: ${String(error)}`);
