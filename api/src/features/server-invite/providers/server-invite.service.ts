@@ -1,19 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { ServerInviteDynamoRepository } from './server-invite.dynamo.repository';
 import ServerInvite from '../entities/server-invite.entity';
+import { addDays } from 'date-fns';
 
 @Injectable()
 export default class ServerInviteService {
   constructor(private readonly repository: ServerInviteDynamoRepository) {}
 
-  // TODO: Validate creator has permissions to create server invites in the server
   public async create(
     serverId: string,
     creatorId: string,
-    expirationDate?: Date,
+    expirationDays?: number,
     maxUses?: number,
   ) {
     try {
+      const expirationDate = expirationDays
+        ? addDays(new Date(), expirationDays)
+        : undefined;
       const serverInvite = new ServerInvite(
         serverId,
         creatorId,
