@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import DynamoDbService from '../../../database/dynamo-db.service';
 import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb';
@@ -6,6 +6,20 @@ import { ServerMember } from '../entities/server-member.entity';
 import ServerMemberDynamoDto from '../dto/server-member.dynamo.dto';
 import EntityAlreadyExistsError from '../../../common/errors/entity-already-exists.error';
 import InternalError from '../../../common/errors/internal.error';
+import BaseError from '../../../common/errors/base.error';
+import { ErrorCode } from '../../../common/errors/error-code';
+
+class EntityNotFoundException extends BaseError {
+  constructor(message: string, cause?: Error, errorCode?: ErrorCode) {
+    super(
+      'EntityNotFoundException',
+      message,
+      errorCode ?? ErrorCode.ENTITY_NOT_FOUND,
+      cause,
+      HttpStatus.NOT_FOUND,
+    );
+  }
+}
 
 @Injectable()
 export class ServerMemberDynamoDbRepository {
@@ -105,6 +119,28 @@ export class ServerMemberDynamoDbRepository {
     } catch (error: unknown) {
       console.error(error);
       throw new InternalError('Failed to get server members by server ID.');
+    }
+  }
+
+  async delete(serverId: string, userId: string) {
+    try {
+      await this.dynamoDb.delete({
+        TableName: this.configService.get<string>('DYNAMODB_TABLE_NAME'),
+        Key: {
+          pk: ServerMemberDynamoDto.generatePk(serverId),
+          sk: ServerMemberDynamoDto.generateSk(serverId, userId),
+        },
+        ConditionExpression: 'attribute_exists(pk) AND attribute_exists(sk)',
+      });
+    } catch (error: unknown) {
+      console.error(error);
+      if (error instanceof ConditionalCheckFailedException) {
+        throw new EntityNotFoundException(
+          'User is not a member of this server.',
+          error,
+        );
+      }
+      throw new InternalError('Failed to remove member from server.');
     }
   }
 }
