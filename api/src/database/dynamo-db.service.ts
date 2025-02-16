@@ -25,7 +25,7 @@ export default class DynamoDbService {
     request: SaveRequest<TItem>,
   ): Promise<SaveResponse<TItem>> {
     const response = await this.dynamoDb.send(new PutCommand(request));
-    console.log(`[DynamoDB] Save response: ${JSON.stringify(response)}`);
+    console.debug(`[DynamoDB] Save response: ${JSON.stringify(response)}`);
     if (response.$metadata.httpStatusCode !== HttpStatus.OK) {
       throw new DynamoDbError(
         `[DynamoDB] Save failed with HTTP status: ${response.$metadata.httpStatusCode}. Full response: ${JSON.stringify(response)}`,
@@ -36,7 +36,7 @@ export default class DynamoDbService {
 
   async get<TItem>(request: GetRequest): Promise<TItem> {
     const response = await this.dynamoDb.send(new GetCommand(request));
-    console.log(`[DynamoDB] Get response: ${JSON.stringify(response)}`);
+    console.debug(`[DynamoDB] Get response: ${JSON.stringify(response)}`);
     if (response.$metadata.httpStatusCode !== HttpStatus.OK) {
       throw new DynamoDbError(
         `[DynamoDB] Get failed with HTTP status: ${response.$metadata.httpStatusCode}. Full response: ${JSON.stringify(response)}`,
