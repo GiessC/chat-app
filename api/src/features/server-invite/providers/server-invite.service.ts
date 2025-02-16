@@ -38,6 +38,15 @@ export default class ServerInviteService {
       throw new ServerInviteServiceError('Failed to get server invite.');
     }
   }
+
+  async revoke(serverId: string, inviteId: string) {
+    try {
+      return await this.repository.revokeInvite(serverId, inviteId);
+    } catch (error: unknown) {
+      console.error(`Server invite service error caused by: ${String(error)}`);
+      throw new ServerInviteServiceError('Failed to revoke server invite.');
+    }
+  }
 }
 
 export class ServerInviteServiceError extends Error {
