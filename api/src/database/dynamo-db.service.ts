@@ -29,9 +29,7 @@ export default class DynamoDbService {
     );
   }
 
-  public async save<TItem>(
-    request: SaveRequest<TItem>,
-  ): Promise<SaveResponse<TItem>> {
+  public async save<TItem>(request: SaveRequest<TItem>): Promise<TItem> {
     const response = await this.dynamoDb.send(new PutCommand(request));
     console.debug(`[DynamoDB] Save response: ${JSON.stringify(response)}`);
     if (response.$metadata.httpStatusCode !== HttpStatus.OK) {
@@ -133,23 +131,30 @@ export default class DynamoDbService {
   }
 }
 
-type SaveRequest<TItem> = PutCommandInput & {
-  Item: TItem;
-};
-
-type SaveResponse<TItem> = TItem;
-
 class DynamoDbError extends Error {
   constructor(message: string) {
     super(message);
   }
 }
 
-type GetRequest = GetCommandInput & {};
+type SaveRequest<TItem> = Omit<
+  PutCommandInput,
+  'ConditionalOperator' | 'Expected'
+> & {
+  Item: TItem;
+};
 
-type QueryRequest = QueryCommandInput & {};
+type GetRequest = Omit<GetCommandInput, 'AttributesToGet'> & {};
 
-type DeleteRequest = DeleteCommandInput & {};
+type QueryRequest = Omit<
+  QueryCommandInput,
+  'AttributesToGet' | 'ConditionalOperator' | 'KeyConditions' | 'QueryFilter'
+> & {};
+
+type DeleteRequest = Omit<
+  DeleteCommandInput,
+  'ConditionalOperator' | 'Expected'
+> & {};
 
 type UpdateRequest<TItem> = Omit<
   UpdateCommandInput,
