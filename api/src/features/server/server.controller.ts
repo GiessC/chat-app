@@ -1,15 +1,9 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Param,
-  HttpStatus,
-  HttpCode,
-} from '@nestjs/common';
+import { Controller, Post, Body, HttpStatus, HttpCode } from '@nestjs/common';
 import { ServerService } from './providers/server.service';
 import { CreateServerDto } from './dto/create-server.dto';
 import ApiResponse from '../../common/ApiResponse';
 import ServerResponseDto from './dto/server-response.dto';
+import TestJoinServerDto from './dto/join-server.dto';
 
 @Controller('server')
 export class ServerController {
@@ -38,10 +32,8 @@ export class ServerController {
   @Post('join')
   @HttpCode(HttpStatus.OK)
   public async join(
-    @Param('serverId') serverId: string,
+    @Body() { serverId, userId, username }: TestJoinServerDto,
   ): Promise<ApiResponse<ServerResponseDto>> {
-    const userId = 'userId'; // TODO: Get userId from auth
-    const username = 'username'; // TODO: Get username from auth
     const server = await this.serverService.join(serverId, userId, username);
     const serverResponseDto: ServerResponseDto = {
       serverId: server.serverId,
