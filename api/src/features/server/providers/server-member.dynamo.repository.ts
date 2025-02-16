@@ -77,4 +77,33 @@ export class ServerMemberDynamoDbRepository {
       throw new InternalError('Failed to get server members by user ID.');
     }
   }
+
+  async getAllByServerId(serverId: string): Promise<ServerMember[]> {
+    try {
+      const response = await this.dynamoDb.query<ServerMemberDynamoDto>({
+        TableName: this.configService.get<string>('DYNAMODB_TABLE_NAME'),
+        KeyConditionExpression: 'pk = :pk AND sk = :sk',
+        ExpressionAttributeValues: {
+          ':pk': ServerMemberDynamoDto.pkFilterByServer(serverId),
+          ':sk': ServerMemberDynamoDto.generateSk(serverId),
+        },
+      });
+      return response.map(
+        (item) =>
+          new ServerMember(
+            item.serverId,
+            item.userId,
+            item.username,
+            item.serverNickname,
+            item.roleIds,
+            item.isBanned,
+            item.isMuted,
+            item.isDeafened,
+          ),
+      );
+    } catch (error: unknown) {
+      console.error(error);
+      throw new InternalError('Failed to get server members by server ID.');
+    }
+  }
 }
