@@ -1,11 +1,9 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import ApiResponse, {
-  ApiResponseWithError,
-  ErrorCode,
-} from '../../common/ApiResponse';
+import ApiResponse, { ApiResponseWithError } from '../../common/ApiResponse';
 import ServerInviteService from './providers/server-invite.service';
 import CreateServerInviteDto from './dto/create-server-invite.dto';
 import ServerInviteResponseDto from './dto/server-invite-response.dto';
+import { ErrorCode } from '../../common/errors/error-code';
 
 @Controller(['server', 'invite'])
 export class ServerInviteController {
@@ -35,7 +33,7 @@ export class ServerInviteController {
       );
       return new ApiResponseWithError<ServerInviteResponseDto>(
         'Failed to create server invite.',
-        ErrorCode.InternalError,
+        ErrorCode.INTERNAL,
       );
     }
   }
