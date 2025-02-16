@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
+export type ServerInviteStatus = 'active' | 'revoked';
+
 export default class ServerInvite {
   private readonly _inviteId: string;
   private readonly _token: string;
@@ -25,6 +27,7 @@ export default class ServerInvite {
     private readonly _expirationDate?: Date,
     private readonly _maxUses?: number,
     private readonly _uses: number = 0,
+    private readonly _status: ServerInviteStatus = 'active',
     inviteId?: string,
     token?: string,
   ) {
@@ -44,7 +47,9 @@ export default class ServerInvite {
   }
 
   public isValid(): boolean {
-    return !this.isExpired() && !this.isMaxUsesReached();
+    return (
+      this._status === 'active' && !this.isExpired() && !this.isMaxUsesReached()
+    );
   }
 
   private isExpired(): boolean {
@@ -76,6 +81,10 @@ export default class ServerInvite {
 
   public get uses(): number {
     return this._uses;
+  }
+
+  public get status(): ServerInviteStatus {
+    return this._status;
   }
 
   public get creatorId(): string {

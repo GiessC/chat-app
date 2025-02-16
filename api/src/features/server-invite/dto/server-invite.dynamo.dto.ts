@@ -1,4 +1,5 @@
 import WithDynamoRetention from '../../../database/dynamo-db-retention';
+import { ServerInviteStatus } from '../entities/server-invite.entity';
 
 export default class ServerInviteDynamoDto implements WithDynamoRetention {
   public readonly pk: string = ServerInviteDynamoDto.generatePk(
@@ -25,8 +26,10 @@ export default class ServerInviteDynamoDto implements WithDynamoRetention {
     expirationDate?: Date,
     public readonly maxUses?: number,
     public readonly uses: number = 0,
+    public readonly status: ServerInviteStatus = 'active',
   ) {
     this.expirationDate = expirationDate?.toISOString();
     this.retentionDateUnix = expirationDate?.getTime();
+    this.status = status;
   }
 }
