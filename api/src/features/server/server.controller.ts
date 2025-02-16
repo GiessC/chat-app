@@ -63,6 +63,14 @@ export class ServerController {
     return new ApiResponse('Left server');
   }
 
+  @Post('kick')
+  public async kick(
+    @Body() { serverId, userId }: { serverId: string; userId: string },
+  ): Promise<ApiResponse<ServerResponseDto>> {
+    await this.serverService.removeMember(serverId, userId);
+    return new ApiResponse('Kicked user from server');
+  }
+
   @Get('list')
   public async listByUserId(
     @Body() { userId }: { userId: string },
