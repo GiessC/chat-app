@@ -4,6 +4,11 @@ import { Server } from '../entities/server.entity';
 import { ServerMemberDynamoDbRepository } from './server-member.dynamo.repository';
 import { ServerMember } from '../entities/server-member.entity';
 
+type UpdateMemberDto = Pick<
+  ServerMember,
+  'serverNickname' | 'isBanned' | 'isMuted' | 'isDeafened' | 'roleIds'
+>;
+
 @Injectable()
 export class ServerService {
   constructor(
@@ -64,6 +69,19 @@ export class ServerService {
     } catch (error: unknown) {
       console.error(`Server service error caused by: ${String(error)}`);
       throw new ServerServiceError('Failed to remove member from server.');
+    }
+  }
+
+  async updateMember(
+    serverId: string,
+    userId: string,
+    updateDto: UpdateMemberDto,
+  ) {
+    try {
+      await this.serverMemberRepo.update(serverId, userId, updateDto);
+    } catch (error: unknown) {
+      console.error(`Server service error caused by: ${String(error)}`);
+      throw new ServerServiceError('Failed to update member.');
     }
   }
 }
