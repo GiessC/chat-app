@@ -7,8 +7,8 @@ import {
   GetCommandInput,
   PutCommand,
   PutCommandInput,
+  QueryCommand,
   QueryCommandInput,
-  ScanCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { ConfigService } from '@nestjs/config';
@@ -50,7 +50,7 @@ export default class DynamoDbService {
   }
 
   async query<TItem>(request: QueryRequest): Promise<TItem[]> {
-    const response = await this.dynamoDb.send(new ScanCommand(request));
+    const response = await this.dynamoDb.send(new QueryCommand(request));
     console.debug(`[DynamoDB] Query response: ${JSON.stringify(response)}`);
     if (response.$metadata.httpStatusCode !== HttpStatus.OK) {
       throw new DynamoDbError(
