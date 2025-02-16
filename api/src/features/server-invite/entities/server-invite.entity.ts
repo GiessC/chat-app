@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
 export default class ServerInvite {
-  private readonly _uses: number = 0;
   private readonly _inviteId: string;
 
   constructor(
@@ -9,13 +8,14 @@ export default class ServerInvite {
     private readonly _creatorId: string,
     private readonly _expirationDate?: Date,
     private readonly _maxUses?: number,
+    private readonly _uses: number = 0,
     inviteId?: string,
   ) {
     this._inviteId = inviteId ?? uuidv4();
   }
 
-  public static decodeLink(link: string) {
-    const [inviteId, serverId] = Buffer.from(link, 'base64')
+  public static decodeInviteCode(inviteCode: string) {
+    const [inviteId, serverId] = Buffer.from(inviteCode, 'base64')
       .toString()
       .split(':');
     return {
