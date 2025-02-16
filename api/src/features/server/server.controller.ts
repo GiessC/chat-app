@@ -55,6 +55,14 @@ export class ServerController {
     );
   }
 
+  @Post('leave')
+  public async leave(
+    @Body() { serverId, userId }: { serverId: string; userId: string },
+  ): Promise<ApiResponse<ServerResponseDto>> {
+    await this.serverService.removeMember(serverId, userId);
+    return new ApiResponse('Left server');
+  }
+
   @Get('list')
   public async listByUserId(
     @Body() { userId }: { userId: string },
