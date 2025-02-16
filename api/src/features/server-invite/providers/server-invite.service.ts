@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { ServerInviteDynamoDbRepository } from './server-invite-dynamo-db-repository.service';
 import ServerInvite from '../entities/server-invite.entity';
 import { addDays } from 'date-fns';
+import { ServerInviteDynamoDbRepository } from './server-invite.dynamo.repository';
 
 @Injectable()
 export default class ServerInviteService {

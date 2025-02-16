@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   ParseUUIDPipe,
+  HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 import { ServerService } from './providers/server.service';
 import { CreateServerDto } from './dto/create-server.dto';
@@ -40,6 +42,7 @@ export class ServerController {
   }
 
   @Patch(':serverId/members/:userId')
+  @HttpCode(HttpStatus.OK)
   public async update(
     @Param('serverId', new ParseUUIDPipe()) serverId: string,
     @Param('userId', new ParseUUIDPipe()) userId: string,
@@ -68,6 +71,7 @@ export class ServerController {
   }
 
   @Post('join')
+  @HttpCode(HttpStatus.OK)
   public async join(
     @Body() joinServerDto: JoinServerDto,
   ): Promise<ApiResponse<ServerResponseDto>> {
@@ -89,6 +93,7 @@ export class ServerController {
   }
 
   @Post('leave')
+  @HttpCode(HttpStatus.NO_CONTENT)
   public async leave(
     @Body() { serverId, userId }: { serverId: string; userId: string },
   ): Promise<ApiResponse<ServerResponseDto>> {
@@ -97,6 +102,7 @@ export class ServerController {
   }
 
   @Post('kick')
+  @HttpCode(HttpStatus.OK)
   public async kick(
     @Body() { serverId, userId }: { serverId: string; userId: string },
   ): Promise<ApiResponse<ServerResponseDto>> {

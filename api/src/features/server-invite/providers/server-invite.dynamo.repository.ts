@@ -51,13 +51,14 @@ export class ServerInviteDynamoDbRepository {
 
   public async get(serverId: string, inviteId: string, token: string) {
     try {
-      const inviteDto = await this.dynamoDb.get<ServerInviteDynamoDto>({
+      const request = {
         TableName: this.configService.get<string>('DYNAMODB_TABLE_NAME'),
         Key: {
           pk: ServerInviteDynamoDto.generatePk(inviteId, token),
           sk: ServerInviteDynamoDto.generateSk(serverId),
         },
-      });
+      };
+      const inviteDto = await this.dynamoDb.get<ServerInviteDynamoDto>(request);
       return new ServerInvite(
         inviteDto.serverId,
         inviteDto.creatorId,
