@@ -3,16 +3,20 @@ import WithDynamoRetention from '../../../database/dynamo-db-retention';
 export default class ServerInviteDynamoDto implements WithDynamoRetention {
   public readonly pk: string = ServerInviteDynamoDto.generatePk(this.inviteId);
   public readonly sk: string = ServerInviteDynamoDto.generateSk(this.serverId);
-  public readonly retentionDateUnix: number;
+  public readonly retentionDateUnix?: number;
+  public readonly expirationDate?: string;
 
   constructor(
     public readonly inviteId: string,
     public readonly serverId: string,
     public readonly creatorId: string,
-    public readonly expirationDate?: Date,
+    expirationDate?: Date,
     public readonly maxUses?: number,
     public readonly uses: number = 0,
-  ) {}
+  ) {
+    this.expirationDate = expirationDate?.toISOString();
+    this.retentionDateUnix = expirationDate?.getTime();
+  }
 
   private static generatePk(inviteId: string): string {
     return `INV#${inviteId}`;
