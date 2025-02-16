@@ -47,4 +47,39 @@ export class ServerMemberDynamoDbRepository {
       throw new InternalError('Failed to join server.');
     }
   }
+
+  async getAllByUserId(userId: string): Promise<ServerMember[]> {
+    try {
+      const response = await this.dynamoDb.query<ServerMemberDynamoDto>({
+        TableName: this.configService.get<string>('DYNAMODB_TABLE_NAME'),
+        IndexName: 'gsi1pk-gsi1sk-index',
+        KeyConditions: {
+          gsi1pk: {
+            AttributeValueList: [ServerMemberDynamoDto.generateGsi1Pk(userId)],
+            ComparisonOperator: 'EQ',
+          },
+          gsi1sk: {
+            AttributeValueList: [ServerMemberDynamoDto.generateGsi1Sk()],
+            ComparisonOperator: 'EQ',
+          },
+        },
+      });
+      return response.map(
+        (item) =>
+          new ServerMember(
+            item.serverId,
+            item.userId,
+            item.username,
+            item.serverNickname,
+            item.roleIds,
+            item.isBanned,
+            item.isMuted,
+            item.isDeafened,
+          ),
+      );
+    } catch (error: unknown) {
+      console.error(error);
+      throw new InternalError('Failed to get server members by user ID.');
+    }
+  }
 }
