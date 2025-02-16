@@ -2,18 +2,18 @@ import {
   Controller,
   Post,
   Body,
-  HttpStatus,
-  HttpCode,
   Get,
   Patch,
   Param,
   ParseUUIDPipe,
+  HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 import { ServerService } from './providers/server.service';
 import { CreateServerDto } from './dto/create-server.dto';
 import ApiResponse, { ListApiResponse } from '../../common/ApiResponse';
 import ServerResponseDto from './dto/server-response.dto';
-import TestJoinServerDto from './dto/join-server.dto';
+import JoinServerDto from './dto/join-server.dto';
 import ServerMemberResponseDto from './dto/server-member-response.dto';
 import UpdateMemberDto from './dto/update-member.dto';
 
@@ -42,6 +42,7 @@ export class ServerController {
   }
 
   @Patch(':serverId/members/:userId')
+  @HttpCode(HttpStatus.OK)
   public async update(
     @Param('serverId', new ParseUUIDPipe()) serverId: string,
     @Param('userId', new ParseUUIDPipe()) userId: string,
@@ -72,9 +73,13 @@ export class ServerController {
   @Post('join')
   @HttpCode(HttpStatus.OK)
   public async join(
-    @Body() { serverId, userId, username }: TestJoinServerDto,
+    @Body() joinServerDto: JoinServerDto,
   ): Promise<ApiResponse<ServerResponseDto>> {
-    const server = await this.serverService.join(serverId, userId, username);
+    const server = await this.serverService.join(
+      joinServerDto.userId,
+      joinServerDto.username,
+      joinServerDto.inviteCode,
+    );
     const serverResponseDto: ServerResponseDto = {
       serverId: server.serverId,
       ownerId: server.ownerId,
@@ -88,6 +93,7 @@ export class ServerController {
   }
 
   @Post('leave')
+  @HttpCode(HttpStatus.NO_CONTENT)
   public async leave(
     @Body() { serverId, userId }: { serverId: string; userId: string },
   ): Promise<ApiResponse<ServerResponseDto>> {
@@ -96,6 +102,7 @@ export class ServerController {
   }
 
   @Post('kick')
+  @HttpCode(HttpStatus.OK)
   public async kick(
     @Body() { serverId, userId }: { serverId: string; userId: string },
   ): Promise<ApiResponse<ServerResponseDto>> {
