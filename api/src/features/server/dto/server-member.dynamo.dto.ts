@@ -33,21 +33,21 @@ export default class ServerMemberDynamoDto {
     this.isBanned = isBanned;
     this.isMuted = isMuted;
     this.isDeafened = isDeafened;
-    this.pk = ServerMemberDynamoDto.generatePk(this.serverId, this.userId);
-    this.sk = ServerMemberDynamoDto.generateSk(this.serverId);
+    this.pk = ServerMemberDynamoDto.generatePk(this.serverId);
+    this.sk = ServerMemberDynamoDto.generateSk(this.serverId, this.userId);
     this.gsi1pk = ServerMemberDynamoDto.generateGsi1Pk(this.userId);
     this.gsi1sk = ServerMemberDynamoDto.generateGsi1Sk();
   }
 
-  public static generatePk(serverId: string, userId: string) {
-    return `SERVER#${serverId}#MEMBER#${userId}`;
-  }
-
-  public static pkFilterByServer(serverId: string) {
+  public static generatePk(serverId: string) {
     return `SERVER#${serverId}#MEMBER`;
   }
 
-  public static generateSk(serverId: string) {
+  public static generateSk(serverId: string, userId: string) {
+    return `SERVER#${serverId}#MEMBER#${userId}`;
+  }
+
+  public static skFilterByServer(serverId: string) {
     return `SERVER#${serverId}#MEMBER`;
   }
 
