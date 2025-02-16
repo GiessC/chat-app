@@ -45,6 +45,15 @@ export class ServerService {
       throw new ServerServiceError('Failed to get servers by user.');
     }
   }
+
+  async getUsersByServer(serverId: string): Promise<ServerMember[]> {
+    try {
+      return await this.serverMemberRepo.getAllByServerId(serverId);
+    } catch (error: unknown) {
+      console.error(`Server service error caused by: ${String(error)}`);
+      throw new ServerServiceError('Failed to get servers by user.');
+    }
+  }
 }
 
 class ServerServiceError extends Error {
