@@ -22,6 +22,7 @@ export class ServerInviteDynamoRepository {
         invite.expirationDate,
         invite.maxUses,
         invite.uses,
+        invite.token,
       );
       await this.dynamoDb.save<ServerInviteDynamoDto>({
         TableName: this.configService.get<string>('DYNAMODB_TABLE_NAME'),

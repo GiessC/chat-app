@@ -13,6 +13,7 @@ export default class ServerInviteDynamoDto implements WithDynamoRetention {
     expirationDate?: Date,
     public readonly maxUses?: number,
     public readonly uses: number = 0,
+    public readonly token?: string,
   ) {
     this.expirationDate = expirationDate?.toISOString();
     this.retentionDateUnix = expirationDate?.getTime();

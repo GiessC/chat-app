@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export default class ServerInvite {
   private readonly _inviteId: string;
-  private readonly token: string;
+  private readonly _token: string;
 
   public static decodeInviteCode(inviteCode: string) {
     const [base64, token] = inviteCode.split(/(?<=.{6})/);
@@ -30,17 +30,17 @@ export default class ServerInvite {
     token?: string,
   ) {
     this._inviteId = inviteId ?? uuidv4();
-    this.token = token ?? ServerInvite.generateToken();
+    this._token = token ?? ServerInvite.generateToken();
   }
 
   public matchesToken(token: string): boolean {
-    return this.token === token;
+    return this._token === token;
   }
 
   public getInviteCode(): string {
     return (
       Buffer.from(`${this._inviteId}:${this._serverId}`).toString('base64') +
-      this.token
+      this._token
     );
   }
 
@@ -57,6 +57,10 @@ export default class ServerInvite {
       return false;
     }
     return this._uses >= this._maxUses;
+  }
+
+  public get token(): string {
+    return this._token;
   }
 
   public get inviteId(): string {
