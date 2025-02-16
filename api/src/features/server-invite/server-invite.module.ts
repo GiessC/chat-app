@@ -10,4 +10,4 @@ import { ServerInviteController } from './server-invite.controller';
   controllers: [ServerInviteController],
   providers: [ServerInviteService, ServerInviteDynamoRepository],
 })
-export class ServerModule {}
+export class ServerInviteModule {}
