@@ -5,6 +5,8 @@ import {
   GetCommandInput,
   PutCommand,
   PutCommandInput,
+  ScanCommand,
+  ScanCommandInput,
 } from '@aws-sdk/lib-dynamodb';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { ConfigService } from '@nestjs/config';
@@ -44,6 +46,17 @@ export default class DynamoDbService {
     }
     return response.Item as TItem;
   }
+
+  async scan<TItem>(request: ScanRequest): Promise<TItem[]> {
+    const response = await this.dynamoDb.send(new ScanCommand(request));
+    console.debug(`[DynamoDB] Scan response: ${JSON.stringify(response)}`);
+    if (response.$metadata.httpStatusCode !== HttpStatus.OK) {
+      throw new DynamoDbError(
+        `[DynamoDB] Scan failed with HTTP status: ${response.$metadata.httpStatusCode}. Full response: ${JSON.stringify(response)}`,
+      );
+    }
+    return response.Items as TItem[];
+  }
 }
 
 type SaveRequest<TItem> = PutCommandInput & {
@@ -59,3 +72,5 @@ class DynamoDbError extends Error {
 }
 
 type GetRequest = GetCommandInput & {};
+
+type ScanRequest = ScanCommandInput & {};
