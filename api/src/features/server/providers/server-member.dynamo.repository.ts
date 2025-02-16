@@ -22,6 +22,7 @@ export class ServerMemberDynamoDbRepository {
         serverMember.username,
         serverMember.serverNickname,
         serverMember.roleIds,
+        serverMember.joinedAt,
         serverMember.isBanned,
         serverMember.isMuted,
         serverMember.isDeafened,
