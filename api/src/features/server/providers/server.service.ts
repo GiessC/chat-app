@@ -3,11 +3,7 @@ import { ServerDynamoDbRepository } from './server.dynamo.repository';
 import { Server } from '../entities/server.entity';
 import { ServerMemberDynamoDbRepository } from './server-member.dynamo.repository';
 import { ServerMember } from '../entities/server-member.entity';
-
-export type UpdateMemberDto = Pick<
-  ServerMember,
-  'serverNickname' | 'isBanned' | 'isMuted' | 'isDeafened' | 'roleIds'
->;
+import UpdateMemberDto from '../dto/update-member.dto';
 
 @Injectable()
 export class ServerService {
