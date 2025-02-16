@@ -1,6 +1,5 @@
-// This is a temporary test DTO until invites are implemented
-export default class TestJoinServerDto {
-  readonly serverId: string;
+export default class JoinServerDto {
   readonly userId: string;
+  readonly inviteCode: string;
   readonly username: string;
 }

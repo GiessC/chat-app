@@ -2,8 +2,6 @@ import {
   Controller,
   Post,
   Body,
-  HttpStatus,
-  HttpCode,
   Get,
   Patch,
   Param,
@@ -13,7 +11,7 @@ import { ServerService } from './providers/server.service';
 import { CreateServerDto } from './dto/create-server.dto';
 import ApiResponse, { ListApiResponse } from '../../common/ApiResponse';
 import ServerResponseDto from './dto/server-response.dto';
-import TestJoinServerDto from './dto/join-server.dto';
+import JoinServerDto from './dto/join-server.dto';
 import ServerMemberResponseDto from './dto/server-member-response.dto';
 import UpdateMemberDto from './dto/update-member.dto';
 
@@ -70,11 +68,14 @@ export class ServerController {
   }
 
   @Post('join')
-  @HttpCode(HttpStatus.OK)
   public async join(
-    @Body() { serverId, userId, username }: TestJoinServerDto,
+    @Body() joinServerDto: JoinServerDto,
   ): Promise<ApiResponse<ServerResponseDto>> {
-    const server = await this.serverService.join(serverId, userId, username);
+    const server = await this.serverService.join(
+      joinServerDto.userId,
+      joinServerDto.username,
+      joinServerDto.inviteCode,
+    );
     const serverResponseDto: ServerResponseDto = {
       serverId: server.serverId,
       ownerId: server.ownerId,

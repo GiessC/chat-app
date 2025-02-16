@@ -48,11 +48,11 @@ export default class ServerInvite {
     return !this.isExpired() && !this.isMaxUsesReached();
   }
 
-  public isExpired(): boolean {
+  private isExpired(): boolean {
     return !this._expirationDate || this._expirationDate < new Date();
   }
 
-  public isMaxUsesReached(): boolean {
+  private isMaxUsesReached(): boolean {
     if (!this._maxUses) {
       return false;
     }

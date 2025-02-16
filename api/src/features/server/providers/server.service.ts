@@ -1,15 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ServerDynamoDbRepository } from './server.dynamo.repository';
 import { Server } from '../entities/server.entity';
 import { ServerMemberDynamoDbRepository } from './server-member.dynamo.repository';
 import { ServerMember } from '../entities/server-member.entity';
 import UpdateMemberDto from '../dto/update-member.dto';
+import ServerInvite from '../../server-invite/entities/server-invite.entity';
+import { ServerInviteDynamoDbRepository } from '../../server-invite/providers/server-invite-dynamo-db-repository.service';
 
 @Injectable()
 export class ServerService {
   constructor(
     private readonly serverRepo: ServerDynamoDbRepository,
     private readonly serverMemberRepo: ServerMemberDynamoDbRepository,
+    private serverInviteRepo: ServerInviteDynamoDbRepository,
   ) {}
 
   public async create(ownerId: string, name: string) {
@@ -22,19 +25,20 @@ export class ServerService {
     }
   }
 
-  async join(
-    serverId: string,
+  public async join(
     userId: string,
     username: string,
+    inviteCode: string,
   ): Promise<Server> {
-    try {
-      const serverMember = new ServerMember(serverId, userId, username);
-      await this.serverMemberRepo.create(serverMember);
-      return await this.serverRepo.get(serverId);
-    } catch (error: unknown) {
-      console.error(`Server service error caused by: ${String(error)}`);
-      throw new ServerServiceError('Failed to join server.');
+    const { serverId, inviteId, token } =
+      ServerInvite.decodeInviteCode(inviteCode);
+    const invite = await this.serverInviteRepo.get(serverId, inviteId, token);
+    if (!invite.isValid()) {
+      throw new BadRequestException('Invalid invite code.');
     }
+    const member = new ServerMember(serverId, userId, username);
+    await this.serverMemberRepo.create(member);
+    return await this.serverRepo.get(serverId);
   }
 
   async getServersByUser(userId: string): Promise<Server[]> {
