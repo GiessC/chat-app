@@ -1,5 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import {
+  BatchGetCommand,
+  BatchGetCommandInput,
   DynamoDBDocumentClient,
   GetCommand,
   GetCommandInput,
@@ -7,7 +9,6 @@ import {
   PutCommandInput,
   QueryCommandInput,
   ScanCommand,
-  ScanCommandInput,
 } from '@aws-sdk/lib-dynamodb';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { ConfigService } from '@nestjs/config';
@@ -57,6 +58,19 @@ export default class DynamoDbService {
       );
     }
     return response.Items as TItem[];
+  }
+
+  async batchGet<TItem>(request: BatchGetCommandInput) {
+    const response = await this.dynamoDb.send(new BatchGetCommand(request));
+    console.debug(`[DynamoDB] BatchGet response: ${JSON.stringify(response)}`);
+    if (response.$metadata.httpStatusCode !== HttpStatus.OK) {
+      throw new DynamoDbError(
+        `[DynamoDB] BatchGet failed with HTTP status: ${response.$metadata.httpStatusCode}. Full response: ${JSON.stringify(response)}`,
+      );
+    }
+    return response.Responses as {
+      [key: string]: TItem[];
+    };
   }
 }
 
