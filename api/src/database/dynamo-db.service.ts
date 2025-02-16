@@ -1,6 +1,8 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import {
   DynamoDBDocumentClient,
+  GetCommand,
+  GetCommandInput,
   PutCommand,
   PutCommandInput,
 } from '@aws-sdk/lib-dynamodb';
@@ -31,6 +33,17 @@ export default class DynamoDbService {
     }
     return request.Item;
   }
+
+  async get<TItem>(request: GetRequest): Promise<TItem> {
+    const response = await this.dynamoDb.send(new GetCommand(request));
+    console.log(`[DynamoDB] Get response: ${JSON.stringify(response)}`);
+    if (response.$metadata.httpStatusCode !== HttpStatus.OK) {
+      throw new DynamoDbError(
+        `[DynamoDB] Get failed with HTTP status: ${response.$metadata.httpStatusCode}. Full response: ${JSON.stringify(response)}`,
+      );
+    }
+    return response.Item as TItem;
+  }
 }
 
 type SaveRequest<TItem> = PutCommandInput & {
@@ -44,3 +57,5 @@ class DynamoDbError extends Error {
     super(message);
   }
 }
+
+type GetRequest = GetCommandInput & {};
