@@ -5,10 +5,9 @@ export default class ServerInvite {
   private readonly _token: string;
 
   public static decodeInviteCode(inviteCode: string) {
-    const [base64, token] = inviteCode.split(/(?<=.{6})/);
-    const [inviteId, serverId] = Buffer.from(base64, 'base64')
-      .toString()
-      .split(':');
+    const [base64, token] = inviteCode.split(/(\w{6})$/);
+    const result = Buffer.from(base64, 'base64').toString();
+    const [inviteId, serverId] = result.split(':');
     return {
       inviteId,
       serverId,
