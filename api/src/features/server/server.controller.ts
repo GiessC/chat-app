@@ -72,7 +72,7 @@ export class ServerController {
     );
   }
 
-  @Get(['members', 'list'])
+  @Get('members')
   public async listMembersByServerId(
     @Body() { serverId }: { serverId: string },
   ): Promise<ApiResponse<ServerMemberResponseDto>> {
