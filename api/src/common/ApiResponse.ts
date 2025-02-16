@@ -25,6 +25,17 @@ export default class ApiResponse<TBody = never> {
   }
 }
 
+export class ListApiResponse<TBody = never> extends ApiResponse<TBody> {
+  constructor(
+    message: string,
+    items: TBody[],
+    errorCode?: ErrorCode,
+    requestErrors?: Record<string, string[]>,
+  ) {
+    super(message, undefined, items, true, errorCode, requestErrors);
+  }
+}
+
 export class ApiResponseWithError<TBody = never> extends ApiResponse<TBody> {
   constructor(
     message: string,
