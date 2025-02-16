@@ -5,14 +5,14 @@ import { ServerMemberDynamoDbRepository } from './server-member.dynamo.repositor
 import { ServerMember } from '../entities/server-member.entity';
 import UpdateMemberDto from '../dto/update-member.dto';
 import ServerInvite from '../../server-invite/entities/server-invite.entity';
-import { ServerInviteDynamoDbRepository } from '../../server-invite/providers/server-invite-dynamo-db-repository.service';
+import ServerInviteService from '../../server-invite/providers/server-invite.service';
 
 @Injectable()
 export class ServerService {
   constructor(
     private readonly serverRepo: ServerDynamoDbRepository,
     private readonly serverMemberRepo: ServerMemberDynamoDbRepository,
-    private serverInviteRepo: ServerInviteDynamoDbRepository,
+    private readonly serverInviteService: ServerInviteService,
   ) {}
 
   public async create(ownerId: string, name: string) {
@@ -32,7 +32,11 @@ export class ServerService {
   ): Promise<Server> {
     const { serverId, inviteId, token } =
       ServerInvite.decodeInviteCode(inviteCode);
-    const invite = await this.serverInviteRepo.get(serverId, inviteId, token);
+    const invite = await this.serverInviteService.get(
+      serverId,
+      inviteId,
+      token,
+    );
     if (!invite.isValid()) {
       throw new BadRequestException('Invalid invite code.');
     }

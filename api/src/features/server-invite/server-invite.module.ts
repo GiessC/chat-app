@@ -9,5 +9,6 @@ import { ServerInviteController } from './server-invite.controller';
   imports: [ConfigModule, DynamoDbModule],
   controllers: [ServerInviteController],
   providers: [ServerInviteService, ServerInviteDynamoDbRepository],
+  exports: [ServerInviteService],
 })
 export class ServerInviteModule {}
