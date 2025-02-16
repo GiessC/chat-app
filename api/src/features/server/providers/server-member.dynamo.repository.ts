@@ -53,10 +53,10 @@ export class ServerMemberDynamoDbRepository {
       const response = await this.dynamoDb.query<ServerMemberDynamoDto>({
         TableName: this.configService.get<string>('DYNAMODB_TABLE_NAME'),
         IndexName: 'gsi1pk-gsi1sk-index',
-        KeyConditionExpression: 'gsi1Pk = :gsi1Pk AND gsi1Sk = :gsi1Sk',
+        KeyConditionExpression: 'gsi1pk = :gsi1pk AND gsi1sk = :gsi1sk',
         ExpressionAttributeValues: {
-          ':gsi1Pk': ServerMemberDynamoDto.generateGsi1Pk(userId),
-          ':gsi1Sk': ServerMemberDynamoDto.generateGsi1Sk(),
+          ':gsi1pk': ServerMemberDynamoDto.generateGsi1Pk(userId),
+          ':gsi1sk': ServerMemberDynamoDto.generateGsi1Sk(),
         },
       });
       return response.map(
