@@ -3,14 +3,14 @@ export default class ServerMemberDynamoDto {
   public readonly sk: string;
   public readonly gsi1Pk: string;
   public readonly gsi1Sk: string;
-  private readonly serverId: string;
-  private readonly userId: string;
-  private readonly username: string;
-  private serverNickname?: string;
-  private roleIds: string[];
-  private isBanned: boolean;
-  private isMuted: boolean;
-  private isDeafened: boolean;
+  public readonly serverId: string;
+  public readonly userId: string;
+  public readonly username: string;
+  public readonly serverNickname?: string;
+  public readonly roleIds: string[];
+  public readonly isBanned: boolean;
+  public readonly isMuted: boolean;
+  public readonly isDeafened: boolean;
 
   constructor(
     serverId: string,
