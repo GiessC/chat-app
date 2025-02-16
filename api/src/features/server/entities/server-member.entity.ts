@@ -7,6 +7,7 @@ export class ServerMember {
   private _isBanned: boolean;
   private _isMuted: boolean;
   private _isDeafened: boolean;
+  private readonly _joinedAt: Date;
 
   constructor(
     serverId: string,
@@ -17,6 +18,7 @@ export class ServerMember {
     isBanned: boolean = false,
     isMuted: boolean = false,
     isDeafened: boolean = false,
+    joinedAt: Date = new Date(),
   ) {
     this._serverId = serverId;
     this._userId = userId;
@@ -26,6 +28,7 @@ export class ServerMember {
     this._isBanned = isBanned;
     this._isMuted = isMuted;
     this._isDeafened = isDeafened;
+    this._joinedAt = joinedAt;
   }
 
   public setServerNickname(serverNickname?: string) {
@@ -78,5 +81,9 @@ export class ServerMember {
 
   public get isDeafened(): boolean {
     return this._isDeafened;
+  }
+
+  public get joinedAt(): Date {
+    return this._joinedAt;
   }
 }
