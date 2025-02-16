@@ -35,6 +35,16 @@ export class ServerService {
       throw new ServerServiceError('Failed to join server.');
     }
   }
+
+  async getServersByUser(userId: string): Promise<Server[]> {
+    try {
+      const serverMembers = await this.serverMemberRepo.getAllByUserId(userId);
+      return this.serverRepo.getMany(serverMembers.map((m) => m.serverId));
+    } catch (error: unknown) {
+      console.error(`Server service error caused by: ${String(error)}`);
+      throw new ServerServiceError('Failed to get servers by user.');
+    }
+  }
 }
 
 class ServerServiceError extends Error {
