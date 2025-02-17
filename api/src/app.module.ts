@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { ServerModule } from './features/server/server.module';
+import { ServerInviteModule } from './features/server-invite/server-invite.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ServerModule } from './features/server/server.module';
       ],
     }),
     ServerModule,
+    ServerInviteModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,7 +1,4 @@
-export enum ErrorCode {
-  RequestValidationError,
-  InternalError,
-}
+import { ErrorCode } from './errors/error-code';
 
 export default class ApiResponse<TBody = never> {
   message: string;
@@ -25,6 +22,17 @@ export default class ApiResponse<TBody = never> {
     this.error = error;
     this.errorCode = errorCode;
     this.requestErrors = requestErrors ?? {};
+  }
+}
+
+export class ListApiResponse<TBody = never> extends ApiResponse<TBody> {
+  constructor(
+    message: string,
+    items: TBody[],
+    errorCode?: ErrorCode,
+    requestErrors?: Record<string, string[]>,
+  ) {
+    super(message, undefined, items, true, errorCode, requestErrors);
   }
 }
 
