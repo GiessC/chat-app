@@ -1,3 +1,5 @@
+import ServerMemberDynamoDto from '../dto/server-member.dynamo.dto';
+
 export class ServerMember {
   private readonly _serverId: string;
   private readonly _userId: string;
@@ -8,6 +10,20 @@ export class ServerMember {
   private _isMuted: boolean;
   private _isDeafened: boolean;
   private readonly _joinedAt: Date;
+
+  public static fromDynamoDbDto(dto: ServerMemberDynamoDto): ServerMember {
+    return new ServerMember(
+      dto.serverId,
+      dto.userId,
+      dto.username,
+      dto.serverNickname,
+      dto.roleIds,
+      dto.isBanned,
+      dto.isMuted,
+      dto.isDeafened,
+      new Date(dto.joinedAt),
+    );
+  }
 
   constructor(
     serverId: string,
