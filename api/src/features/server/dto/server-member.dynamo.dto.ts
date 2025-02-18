@@ -1,3 +1,5 @@
+import { ServerMember } from '../entities/server-member.entity';
+
 export default class ServerMemberDynamoDto {
   public readonly pk: string;
   public readonly sk: string;
@@ -12,6 +14,20 @@ export default class ServerMemberDynamoDto {
   public readonly isBanned: boolean;
   public readonly isMuted: boolean;
   public readonly isDeafened: boolean;
+
+  public static fromMember(member: ServerMember): ServerMemberDynamoDto {
+    return new ServerMemberDynamoDto(
+      member.serverId,
+      member.userId,
+      member.username,
+      member.serverNickname,
+      member.roleIds,
+      new Date(member.joinedAt),
+      member.isBanned,
+      member.isMuted,
+      member.isDeafened,
+    );
+  }
 
   constructor(
     serverId: string,
