@@ -4,7 +4,6 @@ import DynamoDbService from '../../../database/dynamo-db.service';
 import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb';
 import ServerInvite from '../entities/server-invite.entity';
 import ServerInviteDynamoDto from '../dto/server-invite.dynamo.dto';
-import { parseJSON } from 'date-fns';
 
 @Injectable()
 export class ServerInviteDynamoDbRepository {
@@ -26,18 +25,7 @@ export class ServerInviteDynamoDbRepository {
       if (inviteDto.token !== token) {
         throw new ServerInviteDynamoDbRepositoryError('Invalid invite token');
       }
-      return new ServerInvite(
-        inviteDto.serverId,
-        inviteDto.creatorId,
-        inviteDto.expirationDate
-          ? parseJSON(inviteDto.expirationDate)
-          : undefined,
-        inviteDto.maxUses,
-        inviteDto.uses,
-        inviteDto.status,
-        inviteDto.inviteId,
-        inviteDto.token,
-      );
+      return inviteDto.toServerInvite();
     } catch (error: unknown) {
       console.error(error);
       if (error instanceof ConditionalCheckFailedException) {
@@ -52,16 +40,7 @@ export class ServerInviteDynamoDbRepository {
   public async create(invite: ServerInvite): Promise<ServerInvite> {
     try {
       console.log('Creating server invite in DynamoDB:', invite.serverId);
-      const dto = new ServerInviteDynamoDto(
-        invite.inviteId,
-        invite.serverId,
-        invite.creatorId,
-        invite.token,
-        invite.expirationDate,
-        invite.maxUses,
-        invite.uses,
-        invite.status,
-      );
+      const dto = invite.toDynamoDbDto();
       await this.dynamoDb.save<ServerInviteDynamoDto>({
         TableName: this.configService.get<string>('DYNAMODB_TABLE_NAME'),
         Item: dto,
@@ -115,21 +94,7 @@ export class ServerInviteDynamoDbRepository {
           ':sk': 'INV',
         },
       });
-      return invites.map(
-        (inviteDto) =>
-          new ServerInvite(
-            inviteDto.serverId,
-            inviteDto.creatorId,
-            inviteDto.expirationDate
-              ? parseJSON(inviteDto.expirationDate)
-              : undefined,
-            inviteDto.maxUses,
-            inviteDto.uses,
-            inviteDto.status,
-            inviteDto.inviteId,
-            inviteDto.token,
-          ),
-      );
+      return invites.map((inviteDto) => inviteDto.toServerInvite());
     } catch (error: unknown) {
       console.error(error);
       throw new ServerInviteDynamoDbRepositoryError('Failed to list invites');
