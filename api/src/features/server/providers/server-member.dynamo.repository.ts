@@ -30,17 +30,8 @@ export class ServerMemberDynamoDbRepository {
 
   async create(serverMember: ServerMember): Promise<ServerMember> {
     try {
-      const serverMemberDynamoDto = new ServerMemberDynamoDto(
-        serverMember.serverId,
-        serverMember.userId,
-        serverMember.username,
-        serverMember.serverNickname,
-        serverMember.roleIds,
-        serverMember.joinedAt,
-        serverMember.isBanned,
-        serverMember.isMuted,
-        serverMember.isDeafened,
-      );
+      const serverMemberDynamoDto =
+        ServerMemberDynamoDto.fromMember(serverMember);
       await this.dynamoDb.save<ServerMemberDynamoDto>({
         TableName: this.configService.get<string>('DYNAMODB_TABLE_NAME'),
         Item: serverMemberDynamoDto,
@@ -74,19 +65,7 @@ export class ServerMemberDynamoDbRepository {
           ':gsi1sk': ServerMemberDynamoDto.generateGsi1Sk(),
         },
       });
-      return response.map(
-        (item) =>
-          new ServerMember(
-            item.serverId,
-            item.userId,
-            item.username,
-            item.serverNickname,
-            item.roleIds,
-            item.isBanned,
-            item.isMuted,
-            item.isDeafened,
-          ),
-      );
+      return response.map((dto) => ServerMember.fromDynamoDbDto(dto));
     } catch (error: unknown) {
       console.error(error);
       throw new InternalError('Failed to get server members by user ID.');
@@ -103,19 +82,7 @@ export class ServerMemberDynamoDbRepository {
           ':sk': ServerMemberDynamoDto.skFilterByServer(serverId),
         },
       });
-      return response.map(
-        (item) =>
-          new ServerMember(
-            item.serverId,
-            item.userId,
-            item.username,
-            item.serverNickname,
-            item.roleIds,
-            item.isBanned,
-            item.isMuted,
-            item.isDeafened,
-          ),
-      );
+      return response.map((dto) => ServerMember.fromDynamoDbDto(dto));
     } catch (error: unknown) {
       console.error(error);
       throw new InternalError('Failed to get server members by server ID.');
@@ -158,16 +125,7 @@ export class ServerMemberDynamoDbRepository {
         },
         Updates: updates,
       });
-      return new ServerMember(
-        memberDto.serverId,
-        memberDto.userId,
-        memberDto.username,
-        memberDto.serverNickname,
-        memberDto.roleIds,
-        memberDto.isBanned,
-        memberDto.isMuted,
-        memberDto.isDeafened,
-      );
+      return ServerMember.fromDynamoDbDto(memberDto);
     } catch (error: unknown) {
       console.error(error);
       throw new InternalError('Failed to update member.');
