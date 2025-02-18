@@ -11,17 +11,17 @@ export class ServerMember {
   private _isDeafened: boolean;
   private readonly _joinedAt: Date;
 
-  public static fromDynamoDbDto(dto: ServerMemberDynamoDto): ServerMember {
-    return new ServerMember(
-      dto.serverId,
-      dto.userId,
-      dto.username,
-      dto.serverNickname,
-      dto.roleIds,
-      dto.isBanned,
-      dto.isMuted,
-      dto.isDeafened,
-      new Date(dto.joinedAt),
+  public toDynamoDbDto(): ServerMemberDynamoDto {
+    return new ServerMemberDynamoDto(
+      this.serverId,
+      this.userId,
+      this.username,
+      this.serverNickname,
+      this.roleIds,
+      new Date(this.joinedAt),
+      this.isBanned,
+      this.isMuted,
+      this.isDeafened,
     );
   }
 

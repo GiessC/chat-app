@@ -15,17 +15,17 @@ export default class ServerMemberDynamoDto {
   public readonly isMuted: boolean;
   public readonly isDeafened: boolean;
 
-  public static fromMember(member: ServerMember): ServerMemberDynamoDto {
-    return new ServerMemberDynamoDto(
-      member.serverId,
-      member.userId,
-      member.username,
-      member.serverNickname,
-      member.roleIds,
-      new Date(member.joinedAt),
-      member.isBanned,
-      member.isMuted,
-      member.isDeafened,
+  public toMember(): ServerMember {
+    return new ServerMember(
+      this.serverId,
+      this.userId,
+      this.username,
+      this.serverNickname,
+      this.roleIds,
+      this.isBanned,
+      this.isMuted,
+      this.isDeafened,
+      new Date(this.joinedAt),
     );
   }
 
