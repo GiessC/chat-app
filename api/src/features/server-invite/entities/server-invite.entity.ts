@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import ServerInviteDynamoDto from '../dto/server-invite.dynamo.dto';
 
 export type ServerInviteStatus = 'active' | 'revoked';
 
@@ -93,5 +94,18 @@ export default class ServerInvite {
 
   public get serverId(): string {
     return this._serverId;
+  }
+
+  public toDynamoDbDto(): ServerInviteDynamoDto {
+    return new ServerInviteDynamoDto(
+      this.inviteId,
+      this.serverId,
+      this.creatorId,
+      this.token,
+      this.expirationDate,
+      this.maxUses,
+      this.uses,
+      this.status,
+    );
   }
 }

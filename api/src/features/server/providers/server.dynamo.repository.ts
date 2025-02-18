@@ -15,7 +15,7 @@ export class ServerDynamoDbRepository {
   public async create(server: Server): Promise<Server> {
     try {
       console.log('Creating server in DynamoDB:', server.serverId);
-      const dto = new ServerDynamoDbDto(server);
+      const dto = server.toDynamoDbDto();
       await this.dynamoDb.save<ServerDynamoDbDto>({
         TableName: this.configService.get<string>('DYNAMODB_TABLE_NAME'),
         Item: dto,

@@ -8,13 +8,18 @@ export default class ServerDynamoDbDto {
   readonly name: string;
   readonly createdAt: string;
 
-  constructor(server: Server) {
-    this.pk = ServerDynamoDbDto.generatePk(server.serverId);
-    this.sk = ServerDynamoDbDto.generateSk(server.serverId);
-    this.serverId = server.serverId;
-    this.ownerId = server.ownerId;
-    this.name = server.name;
-    this.createdAt = server.createdAt;
+  constructor(
+    serverId: string,
+    ownerId: string,
+    name: string,
+    createdAt: string,
+  ) {
+    this.pk = ServerDynamoDbDto.generatePk(serverId);
+    this.sk = ServerDynamoDbDto.generateSk(serverId);
+    this.serverId = serverId;
+    this.ownerId = ownerId;
+    this.name = name;
+    this.createdAt = createdAt;
   }
 
   public static generatePk(serverId: string) {
@@ -23,5 +28,9 @@ export default class ServerDynamoDbDto {
 
   public static generateSk(serverId: string) {
     return `SERVER#${serverId}`;
+  }
+
+  public toServer(): Server {
+    return new Server(this.ownerId, this.name, this.serverId, this.createdAt);
   }
 }

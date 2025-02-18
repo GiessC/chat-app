@@ -1,3 +1,5 @@
+import ServerMemberDynamoDto from '../dto/server-member.dynamo.dto';
+
 export class ServerMember {
   private readonly _serverId: string;
   private readonly _userId: string;
@@ -85,5 +87,19 @@ export class ServerMember {
 
   public get joinedAt(): Date {
     return this._joinedAt;
+  }
+
+  public toDynamoDbDto(): ServerMemberDynamoDto {
+    return new ServerMemberDynamoDto(
+      this.serverId,
+      this.userId,
+      this.username,
+      this.serverNickname,
+      this.roleIds,
+      new Date(this.joinedAt),
+      this.isBanned,
+      this.isMuted,
+      this.isDeafened,
+    );
   }
 }
