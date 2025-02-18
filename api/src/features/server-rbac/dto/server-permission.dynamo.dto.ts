@@ -1,3 +1,5 @@
+import ServerPermission from '../entities/server-permission.entity';
+
 export default class ServerPermissionDynamoDbDto {
   public readonly pk: string;
   public readonly sk: string;
@@ -35,5 +37,16 @@ export default class ServerPermissionDynamoDbDto {
     this.identityId = identityId;
     this.allowed = allowed;
     this.createdAt = createdAt;
+  }
+
+  public toServerPermission(): ServerPermission {
+    return new ServerPermission(
+      this.permission,
+      this.serverId,
+      this.channelIdOrWildcard,
+      this.identityId,
+      this.allowed,
+      this.createdAt,
+    );
   }
 }

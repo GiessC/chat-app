@@ -1,3 +1,5 @@
+import ServerPermissionDynamoDbDto from '../dto/server-permission.dynamo.dto';
+
 export default class ServerPermission {
   private readonly permission: string;
   private readonly serverId: string;
@@ -20,5 +22,16 @@ export default class ServerPermission {
     this.identityId = identityId;
     this.allowed = allowed;
     this.createdAt = createdAt;
+  }
+
+  public toDynamoDbDto(): ServerPermissionDynamoDbDto {
+    return new ServerPermissionDynamoDbDto(
+      this.permission,
+      this.serverId,
+      this.channelIdOrWildcard,
+      this.identityId,
+      this.allowed,
+      this.createdAt,
+    );
   }
 }
