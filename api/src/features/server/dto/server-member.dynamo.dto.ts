@@ -15,20 +15,6 @@ export default class ServerMemberDynamoDto {
   public readonly isMuted: boolean;
   public readonly isDeafened: boolean;
 
-  public toMember(): ServerMember {
-    return new ServerMember(
-      this.serverId,
-      this.userId,
-      this.username,
-      this.serverNickname,
-      this.roleIds,
-      this.isBanned,
-      this.isMuted,
-      this.isDeafened,
-      new Date(this.joinedAt),
-    );
-  }
-
   constructor(
     serverId: string,
     userId: string,
@@ -73,5 +59,19 @@ export default class ServerMemberDynamoDto {
 
   public static generateGsi1Sk() {
     return '$';
+  }
+
+  public toMember(): ServerMember {
+    return new ServerMember(
+      this.serverId,
+      this.userId,
+      this.username,
+      this.serverNickname,
+      this.roleIds,
+      this.isBanned,
+      this.isMuted,
+      this.isDeafened,
+      new Date(this.joinedAt),
+    );
   }
 }
