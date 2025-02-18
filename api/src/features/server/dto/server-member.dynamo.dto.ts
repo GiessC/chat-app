@@ -61,7 +61,7 @@ export default class ServerMemberDynamoDto {
     return '$';
   }
 
-  public toMember(): ServerMember {
+  public toServerMember(): ServerMember {
     return new ServerMember(
       this.serverId,
       this.userId,

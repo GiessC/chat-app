@@ -64,7 +64,7 @@ export class ServerMemberDynamoDbRepository {
           ':gsi1sk': ServerMemberDynamoDto.generateGsi1Sk(),
         },
       });
-      return response.map((dto) => dto.toMember());
+      return response.map((dto) => dto.toServerMember());
     } catch (error: unknown) {
       console.error(error);
       throw new InternalError('Failed to get server members by user ID.');
@@ -81,7 +81,7 @@ export class ServerMemberDynamoDbRepository {
           ':sk': ServerMemberDynamoDto.skFilterByServer(serverId),
         },
       });
-      return response.map((dto) => dto.toMember());
+      return response.map((dto) => dto.toServerMember());
     } catch (error: unknown) {
       console.error(error);
       throw new InternalError('Failed to get server members by server ID.');
@@ -124,7 +124,7 @@ export class ServerMemberDynamoDbRepository {
         },
         Updates: updates,
       });
-      return memberDto.toMember();
+      return memberDto.toServerMember();
     } catch (error: unknown) {
       console.error(error);
       throw new InternalError('Failed to update member.');
