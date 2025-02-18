@@ -1,3 +1,5 @@
+import { ServerMember } from '../entities/server-member.entity';
+
 export default class ServerMemberDynamoDto {
   public readonly pk: string;
   public readonly sk: string;
@@ -57,5 +59,19 @@ export default class ServerMemberDynamoDto {
 
   public static generateGsi1Sk() {
     return '$';
+  }
+
+  public toServerMember(): ServerMember {
+    return new ServerMember(
+      this.serverId,
+      this.userId,
+      this.username,
+      this.serverNickname,
+      this.roleIds,
+      this.isBanned,
+      this.isMuted,
+      this.isDeafened,
+      new Date(this.joinedAt),
+    );
   }
 }

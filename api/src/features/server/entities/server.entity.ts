@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import ServerDynamoDbDto from '../dto/server.dynamo.dto';
 
 export class Server {
   private readonly _serverId: string;
@@ -32,5 +33,14 @@ export class Server {
 
   get createdAt(): string {
     return this._createdAt;
+  }
+
+  public toDynamoDbDto(): ServerDynamoDbDto {
+    return new ServerDynamoDbDto(
+      this._serverId,
+      this._ownerId,
+      this._name,
+      this._createdAt,
+    );
   }
 }

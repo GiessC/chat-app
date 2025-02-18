@@ -1,5 +1,8 @@
 import WithDynamoRetention from '../../../database/dynamo-db-retention';
-import { ServerInviteStatus } from '../entities/server-invite.entity';
+import ServerInvite, {
+  ServerInviteStatus,
+} from '../entities/server-invite.entity';
+import { parseJSON } from 'date-fns';
 
 export default class ServerInviteDynamoDto implements WithDynamoRetention {
   public readonly pk: string = ServerInviteDynamoDto.generatePk(this.serverId);
@@ -28,5 +31,18 @@ export default class ServerInviteDynamoDto implements WithDynamoRetention {
     this.expirationDate = expirationDate?.toISOString();
     this.retentionDateUnix = expirationDate?.getTime();
     this.status = status;
+  }
+
+  public toServerInvite(): ServerInvite {
+    return new ServerInvite(
+      this.serverId,
+      this.creatorId,
+      this.expirationDate ? parseJSON(this.expirationDate) : undefined,
+      this.maxUses,
+      this.uses,
+      this.status,
+      this.inviteId,
+      this.token,
+    );
   }
 }
