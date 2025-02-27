@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
@@ -15,16 +16,28 @@ import ServerInviteService from './providers/server-invite.service';
 import CreateServerInviteDto from './dto/create-server-invite.dto';
 import ServerInviteResponseDto from './dto/server-invite-response.dto';
 import { ErrorCode } from '../../common/errors/error-code';
+import ServerPermissionService from '../server-rbac/providers/server-permission.service';
 
 @Controller('server/invite')
 export class ServerInviteController {
-  constructor(private readonly serverInviteService: ServerInviteService) {}
+  constructor(
+    private readonly serverPermissionService: ServerPermissionService,
+    private readonly serverInviteService: ServerInviteService,
+  ) {}
 
   @Get('list')
   public async list(
     @Body() { serverId }: { serverId: string },
   ): Promise<ApiResponse<ServerInviteResponseDto>> {
     try {
+      const userIsAllowed =
+        await this.serverPermissionService.userHasServerPermission(
+          serverId,
+          'server-invite:list',
+        );
+      if (!userIsAllowed) {
+        throw new ForbiddenException();
+      }
       const serverInvites = await this.serverInviteService.list(serverId);
       const responseDtos: ServerInviteResponseDto[] = serverInvites.map(
         (invite) => ({

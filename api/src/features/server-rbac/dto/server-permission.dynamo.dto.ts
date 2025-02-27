@@ -10,12 +10,12 @@ export default class ServerPermissionDynamoDbDto {
   public readonly allowed: boolean;
   public readonly createdAt: string;
 
-  public static generatePk(serverId: string, identityId: string) {
-    return `SERVER#${serverId}#IDENTITY#${identityId}`;
+  public static generatePk(serverId: string, permission: string) {
+    return `SERVER#${serverId}#PERMISSION#${permission}`;
   }
 
-  public static generateSk(channelIdOrWildcard: string, permission: string) {
-    return `CHANNEL#${channelIdOrWildcard}#PERMISSION#${permission}`;
+  public static generateSk(channelIdOrWildcard: string, identityId: string) {
+    return `CHANNEL#${channelIdOrWildcard}#IDENTITY#${identityId}`;
   }
 
   constructor(

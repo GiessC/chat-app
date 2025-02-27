@@ -62,6 +62,25 @@ export default class DynamoDbService {
     return response.Items as TItem[];
   }
 
+  one_of_filter(attributeName: string, values: string[]) {
+    let keyConditionExpression = '';
+    const expressionAttributeNames = {};
+    const expressionAttributeValues = {};
+
+    for (let i = 0; i < values.length; i++) {
+      const value = values[i];
+      keyConditionExpression += `#${attributeName}${i} = :${attributeName}${i} or `;
+      expressionAttributeNames[`#${attributeName}${i}`] = attributeName;
+      expressionAttributeValues[`:${attributeName}${i}`] = value;
+    }
+
+    return {
+      keyCondition: keyConditionExpression.slice(0, -4),
+      expressionAttributeNames,
+      expressionAttributeValues,
+    };
+  }
+
   async batchGet<TItem>(request: BatchGetCommandInput) {
     const response = await this.dynamoDb.send(new BatchGetCommand(request));
     console.debug(`[DynamoDB] BatchGet response: ${JSON.stringify(response)}`);
