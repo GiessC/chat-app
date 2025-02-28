@@ -24,16 +24,19 @@ export default class ServerPermissionService {
     if (userPermissions.length === 0) {
       return false;
     }
+
+    return this.checkPermissionHierarchy(permission, userPermissions);
   }
 
   public checkPermissionHierarchy(
     targetPermission: string,
     userPermissions: ServerPermission[],
-  ) {
+  ): boolean {
     for (const permission of userPermissions) {
-      if (permission) {
-        return permission.allows(targetPermission);
+      if (permission.allows(targetPermission)) {
+        return true;
       }
     }
+    return false;
   }
 }
