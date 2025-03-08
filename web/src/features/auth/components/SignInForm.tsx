@@ -6,7 +6,7 @@ import { Input } from "@/components/base/ui/input";
 import { Button } from "@/components/base/ui/button";
 
 const signInSchema = z.object({
-  username: z.string().min(1, { message: "Username is required." }),
+  email: z.string().min(1, { message: "Email is required." }),
   password: z.string().min(1, { message: "Password is required." }),
 });
 
@@ -16,7 +16,7 @@ export default function SignInForm() {
   const form = useForm({
     schema: signInSchema,
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
@@ -29,12 +29,12 @@ export default function SignInForm() {
     <Form onSubmit={onSubmit} {...form}>
       <FormField
         control={form.control}
-        name='username'
+        name='email'
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Username</FormLabel>
+            <FormLabel>Email</FormLabel>
             <FormControl>
-              <Input placeholder='Username' {...field} />
+              <Input placeholder='Email' {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
