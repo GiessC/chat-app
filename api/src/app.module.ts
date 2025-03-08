@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ServerModule } from './features/server/server.module';
 import { ServerInviteModule } from './features/server-invite/server-invite.module';
 import { CognitoAuthModule } from '@nestjs-cognito/auth';
+import { AuthenticationModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { CognitoAuthModule } from '@nestjs-cognito/auth';
     }),
     ServerModule,
     ServerInviteModule,
+    AuthenticationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
