@@ -16,8 +16,10 @@ import ServerResponseDto from './dto/server-response.dto';
 import JoinServerDto from './dto/join-server.dto';
 import ServerMemberResponseDto from './dto/server-member-response.dto';
 import UpdateMemberDto from './dto/update-member.dto';
+import { Authentication } from '@nestjs-cognito/auth';
 
 @Controller('server')
+@Authentication()
 export class ServerController {
   constructor(private readonly serverService: ServerService) {}
 

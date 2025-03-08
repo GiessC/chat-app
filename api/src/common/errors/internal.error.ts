@@ -1,8 +1,8 @@
-import BaseError from './base.error';
 import { ErrorCode } from './error-code';
 import { HttpStatus } from '@nestjs/common';
+import HttpError from './http.error';
 
-export default class InternalError extends BaseError {
+export default class InternalError extends HttpError {
   constructor(message: string, cause?: Error) {
     super(
       'InternalError',

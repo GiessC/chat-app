@@ -15,8 +15,10 @@ import ServerInviteService from './providers/server-invite.service';
 import CreateServerInviteDto from './dto/create-server-invite.dto';
 import ServerInviteResponseDto from './dto/server-invite-response.dto';
 import { ErrorCode } from '../../common/errors/error-code';
+import { Authentication } from '@nestjs-cognito/auth';
 
 @Controller('server/invite')
+@Authentication()
 export class ServerInviteController {
   constructor(private readonly serverInviteService: ServerInviteService) {}
 
