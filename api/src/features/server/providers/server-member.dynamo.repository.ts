@@ -6,10 +6,10 @@ import { ServerMember } from '../entities/server-member.entity';
 import ServerMemberDynamoDto from '../dto/server-member.dynamo.dto';
 import EntityAlreadyExistsError from '../../../common/errors/entity-already-exists.error';
 import InternalError from '../../../common/errors/internal.error';
-import BaseError from '../../../common/errors/base.error';
 import { ErrorCode } from '../../../common/errors/error-code';
+import HttpError from 'src/common/errors/http.error';
 
-class EntityNotFoundException extends BaseError {
+class EntityNotFoundException extends HttpError {
   constructor(message: string, cause?: Error, errorCode?: ErrorCode) {
     super(
       'EntityNotFoundException',

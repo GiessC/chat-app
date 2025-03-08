@@ -1,15 +1,20 @@
 import {
+  CodeMismatchException,
   CognitoIdentityProviderClient,
   ConfirmSignUpCommand,
+  ExpiredCodeException,
   InvalidPasswordException,
   SignUpCommand,
   SignUpCommandInput,
   UsernameExistsException,
+  UserNotFoundException,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import UserAlreadyExistsError from '../errors/user-already-exists.error';
 import InvalidPasswordError from '../errors/invalid-password.error';
+import BadRequestError from 'src/common/errors/bad-request.error';
+import { ErrorCode } from 'src/common/errors/error-code';
 
 export default class CognitoService {
   private readonly cognitoClient: CognitoIdentityProviderClient;
@@ -70,11 +75,40 @@ export default class CognitoService {
       : undefined;
   }
 
-  async confirmSignUp(emailOrPhone: string, code: string): Promise<void> {
+  async confirmSignUp(email: string, code: string): Promise<void> {
+    try {
+      await this.tryConfirmSignUp(email, code);
+    } catch (error: unknown) {
+      if (error instanceof CodeMismatchException) {
+        throw new BadRequestError(
+          'The confirmation code specified is invalid.',
+          ErrorCode.INVALID_AUTH_CODE,
+          error,
+        );
+      }
+      if (error instanceof ExpiredCodeException) {
+        throw new BadRequestError(
+          'Specified user does not exist or the code has expired.',
+          ErrorCode.EXPIRED_AUTH_CODE,
+          error,
+        );
+      }
+      if (error instanceof UserNotFoundException) {
+        throw new BadRequestError(
+          'The user does not exist.',
+          ErrorCode.ENTITY_NOT_FOUND,
+          error,
+        );
+      }
+      throw error;
+    }
+  }
+
+  async tryConfirmSignUp(email: string, code: string): Promise<void> {
     await this.cognitoClient.send(
       new ConfirmSignUpCommand({
         ClientId: this.configService.get('COGNITO_CLIENT_ID'),
-        Username: emailOrPhone,
+        Username: email,
         ConfirmationCode: code,
       }),
     );
