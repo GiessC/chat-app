@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { useForm } from "@/hooks/form/useForm";
-import Form from "@/components/ui/Form";
+import Form from "@/components/ui/form";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/base/ui/form";
 import { Input } from "@/components/base/ui/input";
 import { Button } from "@/components/base/ui/button";
