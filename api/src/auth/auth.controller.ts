@@ -1,5 +1,5 @@
 import { PublicRoute } from '@nestjs-cognito/auth';
-import { Controller, Inject, Post } from '@nestjs/common';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
 import AuthService from './providers/auth.service';
 
 @Controller('auth')
@@ -8,5 +8,19 @@ export default class AuthenticationController {
 
   @Post('sign-up')
   @PublicRoute()
-  signUp() {}
+  signUp(@Body() request: SignUpRequest) {
+    return this.authService.signUp(
+      request.username,
+      request.password,
+      request.email,
+      request.phoneNumber,
+    );
+  }
+}
+
+interface SignUpRequest {
+  username: string;
+  password: string;
+  email?: string;
+  phoneNumber?: string;
 }
