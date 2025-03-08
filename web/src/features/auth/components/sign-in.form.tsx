@@ -1,18 +1,10 @@
-import { z } from "zod";
 import { useForm } from "@/hooks/form/useForm";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/base/ui/form";
 import { Input } from "@/components/base/ui/input";
 import { Button } from "@/components/base/ui/button";
 import { useContext } from "react";
-import { AuthContext } from "../api/auth.context";
+import { AuthContext, SignInRequest, signInSchema } from "../api/auth.context";
 import Form from "@/components/ui/Form";
-
-const signInSchema = z.object({
-  email: z.string().min(1, { message: "Email is required." }),
-  password: z.string().min(1, { message: "Password is required." }),
-});
-
-type SignInRequest = z.infer<typeof signInSchema>;
 
 export default function SignInForm() {
   const { signIn } = useContext(AuthContext);
