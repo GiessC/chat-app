@@ -1,5 +1,6 @@
 import {
   CognitoIdentityProviderClient,
+  ConfirmSignUpCommand,
   SignUpCommand,
   SignUpCommandInput,
 } from '@aws-sdk/client-cognito-identity-provider';
@@ -20,10 +21,11 @@ export default class CognitoService {
     password: string,
     email?: string,
     phoneNumber?: string,
-  ): Promise<string | undefined> {
+  ): Promise<SignUpResponse | undefined> {
+    const cognitoUsername: string = email ?? phoneNumber!;
     const commandInput: SignUpCommandInput = {
       ClientId: this.configService.get('COGNITO_CLIENT_ID'),
-      Username: email ?? phoneNumber,
+      Username: cognitoUsername,
       Password: password,
       UserAttributes: [
         {
@@ -36,7 +38,23 @@ export default class CognitoService {
     const response = await this.cognitoClient.send(
       new SignUpCommand(commandInput),
     );
-    return response.UserSub;
+    return response.UserSub
+      ? {
+          emailOrPhoneNumber: cognitoUsername,
+          userId: response.UserSub,
+          isConfirmed: response.UserConfirmed ?? false,
+        }
+      : undefined;
+  }
+
+  async confirmSignUp(emailOrPhone: string, code: string): Promise<void> {
+    await this.cognitoClient.send(
+      new ConfirmSignUpCommand({
+        ClientId: this.configService.get('COGNITO_CLIENT_ID'),
+        Username: emailOrPhone,
+        ConfirmationCode: code,
+      }),
+    );
   }
 
   addOptionalAttributesIfSpecified(
@@ -56,4 +74,10 @@ export default class CognitoService {
       });
     }
   }
+}
+
+export interface SignUpResponse {
+  emailOrPhoneNumber: string;
+  userId: string;
+  isConfirmed: boolean;
 }

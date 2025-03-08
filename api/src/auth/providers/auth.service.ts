@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import CognitoService from './cognito.service';
+import CognitoService, { SignUpResponse } from './cognito.service';
 
 @Injectable()
 export default class AuthService {
@@ -10,7 +10,11 @@ export default class AuthService {
     password: string,
     email?: string,
     phoneNumber?: string,
-  ) {
+  ): Promise<SignUpResponse | undefined> {
     return this.cognitoService.signUp(username, password, email, phoneNumber);
+  }
+
+  confirmSignUp(emailOrPhone: string, code: string): Promise<void> {
+    return this.cognitoService.confirmSignUp(emailOrPhone, code);
   }
 }
