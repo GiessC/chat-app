@@ -1,8 +1,11 @@
 import SignIn from "./app/pages/auth/sign-in/sign-in.page";
+import Providers from "./providers";
 
 function App() {
   return (
-    <SignIn />
+    <Providers>
+      <SignIn />
+    </Providers>
   );
 }
 
