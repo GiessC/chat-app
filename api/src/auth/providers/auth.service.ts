@@ -8,13 +8,12 @@ export default class AuthService {
   signUp(
     username: string,
     password: string,
-    email?: string,
-    phoneNumber?: string,
+    email: string,
   ): Promise<SignUpResponse | undefined> {
-    return this.cognitoService.signUp(username, password, email, phoneNumber);
+    return this.cognitoService.signUp(username, password, email);
   }
 
-  confirmSignUp(emailOrPhone: string, code: string): Promise<void> {
-    return this.cognitoService.confirmSignUp(emailOrPhone, code);
+  confirmSignUp(email: string, code: string): Promise<void> {
+    return this.cognitoService.confirmSignUp(email, code);
   }
 }

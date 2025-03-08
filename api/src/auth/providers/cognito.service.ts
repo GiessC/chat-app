@@ -19,28 +19,29 @@ export default class CognitoService {
   async signUp(
     username: string,
     password: string,
-    email?: string,
-    phoneNumber?: string,
+    email: string,
   ): Promise<SignUpResponse | undefined> {
-    const cognitoUsername: string = email ?? phoneNumber!;
     const commandInput: SignUpCommandInput = {
       ClientId: this.configService.get('COGNITO_CLIENT_ID'),
-      Username: cognitoUsername,
+      Username: email,
       Password: password,
       UserAttributes: [
         {
           Name: 'preferred_username',
           Value: username,
         },
+        {
+          Name: 'email',
+          Value: email,
+        },
       ],
     };
-    this.addOptionalAttributesIfSpecified(commandInput, { email, phoneNumber });
     const response = await this.cognitoClient.send(
       new SignUpCommand(commandInput),
     );
     return response.UserSub
       ? {
-          emailOrPhoneNumber: cognitoUsername,
+          email,
           userId: response.UserSub,
           isConfirmed: response.UserConfirmed ?? false,
         }
@@ -56,28 +57,10 @@ export default class CognitoService {
       }),
     );
   }
-
-  addOptionalAttributesIfSpecified(
-    commandInput: SignUpCommandInput,
-    request: { email?: string; phoneNumber?: string },
-  ) {
-    if (request.email) {
-      commandInput.UserAttributes!.push({
-        Name: 'email',
-        Value: request.email,
-      });
-    }
-    if (request.phoneNumber) {
-      commandInput.UserAttributes!.push({
-        Name: 'phone_number',
-        Value: request.phoneNumber,
-      });
-    }
-  }
 }
 
 export interface SignUpResponse {
-  emailOrPhoneNumber: string;
+  email: string;
   userId: string;
   isConfirmed: boolean;
 }

@@ -21,7 +21,6 @@ export default class AuthenticationController {
       request.username,
       request.password,
       request.email,
-      request.phoneNumber,
     );
   }
 
@@ -29,21 +28,17 @@ export default class AuthenticationController {
   @HttpCode(HttpStatus.OK)
   @PublicRoute()
   confirmSignUp(@Body() request: ConfirmSignUpRequest) {
-    return this.authService.confirmSignUp(
-      request.emailOrPhoneNumber,
-      request.code,
-    );
+    return this.authService.confirmSignUp(request.email, request.code);
   }
 }
 
 interface SignUpRequest {
   username: string;
   password: string;
-  email?: string;
-  phoneNumber?: string;
+  email: string;
 }
 
 interface ConfirmSignUpRequest {
-  emailOrPhoneNumber: string;
+  email: string;
   code: string;
 }
