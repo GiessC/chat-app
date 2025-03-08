@@ -1,21 +1,23 @@
-import { type HttpStatus } from '@nestjs/common';
+import { HttpException, type HttpStatus } from '@nestjs/common';
 import type { ErrorCode } from './error-code';
 
-export default class BaseError extends Error {
+export default class BaseError extends HttpException {
   constructor(
     public readonly name: string,
     readonly message: string,
     public readonly errorCode: ErrorCode,
-    public readonly cause?: Error,
+    public readonly errorCause?: Error,
     public readonly httpStatus?: HttpStatus,
   ) {
-    super(message);
-    if (cause instanceof BaseError && !this.httpStatus) {
-      this.httpStatus = cause.httpStatus;
+    super(message, httpStatus as number, {
+      cause: errorCause,
+    });
+    if (errorCause instanceof BaseError && !this.httpStatus) {
+      this.httpStatus = errorCause.httpStatus;
     }
   }
 
   public toString(): string {
-    return `${this.name} (${this.errorCode}): ${this.message} ${this.httpStatus ? `HTTP Status: ${this.httpStatus}.` : ''} ${this.cause ? `Inner Error: ${this.cause.toString()}` : ''}`;
+    return `${this.name} (${this.errorCode}): ${this.message} ${this.httpStatus ? `HTTP Status: ${this.httpStatus}.` : ''} ${this.errorCause ? `Inner Error: ${this.errorCause.toString()}` : ''}`;
   }
 }
