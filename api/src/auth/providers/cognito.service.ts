@@ -43,7 +43,7 @@ export default class CognitoService {
     }
   }
 
-  async trySignUp(
+  private async trySignUp(
     username: string,
     password: string,
     email: string,
@@ -104,7 +104,7 @@ export default class CognitoService {
     }
   }
 
-  async tryConfirmSignUp(email: string, code: string): Promise<void> {
+  private async tryConfirmSignUp(email: string, code: string): Promise<void> {
     await this.cognitoClient.send(
       new ConfirmSignUpCommand({
         ClientId: this.configService.get('COGNITO_CLIENT_ID'),
