@@ -28,6 +28,28 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      'import/no-restricted-paths': [
+        'error',
+        {
+          zones: [
+            {
+              target: './src/features/auth',
+              from: './src/features',
+              except: ['./auth'],
+            },
+            {
+              target: [
+                './src/components',
+                './src/hooks',
+                './src/lib',
+                './src/types',
+                './src/utils',
+              ],
+              from: ['./src/features', './src/app'],
+            },
+          ],
+        },
+      ],
     },
   },
 );
